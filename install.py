@@ -38,6 +38,7 @@ if not os.path.isfile('''/home/''' + mainUser + '''/Desktop/ScoringEngine.py''')
 	os.system('''cd /home/''' + mainUser + '''/Desktop/emojify  >> /dev/null && ./emojify --input /home/''' + mainUser +'''/Desktop/scorebot.py --output /home/''' + mainUser + '''/Desktop/ScoringEngine.py >> /dev/null''')
 	os.system('''cd /home/''' + mainUser + '''/Desktop/emojify  >> /dev/null && ./emojify --input /home/''' + mainUser +'''/Desktop/TeamInfo1.py --output /home/''' + mainUser + '''/Desktop/TeamInfo.py >> /dev/null''')
 	os.system('''rm -rf /home/''' + mainUser + '''/Desktop/emojify ''')
+	os.system('''rm -rf /home/''' + mainUser + '''/Desktop/install.py ''')
 
 	inputVar = str(input("Would you like to start the scorebot? [y/n]"))
 	yesCheck = "y"
