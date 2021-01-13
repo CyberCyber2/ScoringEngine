@@ -105,7 +105,7 @@ allTasks = [
 	Task('Beginner','bad hostname fixed', 2, ' [ ! "$(grep IMPOSTER /etc/hostname)" ] '), 
 	Task('Beginner','login.defs Password max days fixed', 1, '! [ "$(grep PASS_MAX_DAYS | grep 99999 /etc/login.defs)" ] '),
 	Task('Beginner','login.defs Password login retries fixed', 1, '! [ "$(grep 5000000 /etc/login.defs)" ] '),
-	Task('Beginner','PAM Password complexity set', 5, ' [ "$(grep "ucredit=‐1" /etc/pam.d/common-password)" ] '),
+	Task('Beginner','PAM Password complexity set', 5, ' [ "$(cat /etc/pam.d/common-password | grep ucredit | grep 1)" ] '),
 	Task('Beginner','CrewMate Password file removed', 2,' [ ! "$(ls -al /home/green/Desktop | grep CrewMatePasswords)" ] '),
 	Task('Returner','Bad README removed for Sudoers', 2, ' [ ! "$(ls /etc/sudoers.d | grep README)" ]'),
 	Task('Returner','Bad BASHRC umask', 2, ' [ ! "$(grep umask ~/.bashrc | grep 444)" ]'),
