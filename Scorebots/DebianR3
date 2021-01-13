@@ -102,7 +102,7 @@ allTasks = [
 	Task('Beginner','added users to electrical group', 2, ' [  "$(grep electrical /etc/group | grep red)" ]'), 
 	Task('Beginner','root login requires a password', 4, '! [ "$(grep NOPASSWD /etc/sudoers)" ]'),
 	Task('Beginner','bad alias removed', 3, ' [ ! "$(grep netcat ~/.bashrc)" ] '), 
-	Task('Beginner','bad hostname fixed', 2, ' [ ! "$(grep IMP322OSTER /etc/hostname)" ] '), 
+	Task('Beginner','bad hostname fixed', 2, ' [ ! "$(grep IMPOSTER /etc/hostname)" ] '), 
 	Task('Beginner','login.defs Password max days fixed', 1, '! [ "$(grep PASS_MAX_DAYS | grep 99999 /etc/login.defs)" ] '),
 	Task('Beginner','login.defs Password login retries fixed', 1, '! [ "$(grep 5000000 /etc/login.defs)" ] '),
 	Task('Beginner','PAM Password complexity set', 5,' [ "$(grep ucredit=‐1 /etc/pam.d/common-password)" ] '),
