@@ -86,15 +86,14 @@ allTasks = [
 	Task('Beginner','Removed Unauthorized HIDDEN user toor', 3, ' [ ! "$(grep toor /etc/passwd)" ]'), 
 	Task('Beginner','Removed Unauthorized admin green', 1, ' [ ! "$(grep sudo /etc/group | grep green)" ]'),
 	Task('Beginner','Added user black', 1, ' [  "$(grep black /etc/passwd)" ]'), 
-	Task('Beginner','Added group electrical', 1, ' [  "$(grep electrical /etc/group)" ]'), 
-	Task('Beginner','sokka has a password', 2, ' [  "$(grep \'\$*\$\' /etc/shadow | grep sokka)" ]'), 
-	Task('Beginner','Unauthorized malware netcat removed', 2, ' [ ! "$(dpkg --list | grep netcat)" ]'), 
-	Task('Beginner','Unauthorized malware john removed', 2, ' [ ! "$(dpkg --list | grep john)" ]'), 
-	Task('Beginner','Unauthorized malware hydra removed', 2, ' [ ! "$(dpkg --list | grep hydra)" ]'), 
-	Task('Beginner','Unsecure program telnet removed', 2, ' [ ! "$(dpkg --list | grep telnet)" ]'), 
+	Task('Beginner','Added group electrical', 1, ' [  "$(grep electrical /etc/group)" ]'),  
+	Task('Beginner','Unauthorized malware netcat removed', 1, ' [ ! "$(dpkg --list | grep netcat)" ]'), 
+	Task('Beginner','Unauthorized malware john removed', 1, ' [ ! "$(dpkg --list | grep john)" ]'), 
+	Task('Beginner','Unauthorized malware hydra removed', 1, ' [ ! "$(dpkg --list | grep hydra)" ]'), 
+	Task('Beginner','Unsecure program telnet removed', 1, ' [ ! "$(dpkg --list | grep telnet)" ]'), 
 	Task('Beginner','Unecessary service vsftpd removed', 1, ' [ ! "$(dpkg --list | grep vsftpd)" ]'), 
-	Task('Beginner','Stellarium Installed', 2, ' [  "$(dpkg --list | grep stellarium)" ]'), 
-	Task('Beginner','Correct permissions set on /etc/shadow', 2, ' [ ! "$(stat -c "\%a \%n" /etc/shadow | grep 666)" ]'), #
+	Task('Beginner','Stellarium Installed', 1, ' [  "$(dpkg --list | grep stellarium)" ]'), 
+	Task('Beginner','Correct permissions set on /etc/shadow', 3, ' [ ! "$(stat -c "\%a \%n" /etc/shadow | grep 666)" ]'), #
 	Task('Beginner','Media Files removed', 2, ' [ ! "$(ls /home/yellow/Videos | grep AmongUsTrapRemix)" ]'),
 	Task('Beginner','Hidden Desktop file removed', 2, ' [ ! "$(ls -al /home/cyber/Desktop | grep virus)" ]'),
 	Task('Beginner','Firewall rule added', 2, ' [ "$(grep 21 /etc/ufw/user.rules)" ]'), 
@@ -104,8 +103,8 @@ allTasks = [
 	Task('Beginner','root login requires a password', 4, '! [ "$(grep NOPASSWD /etc/sudoers)" ]'),
 	Task('Beginner','bad alias removed', 3, ' [ ! "$(grep netcat ~/.bashrc)" ] '), 
 	Task('Beginner','bad hostname fixed', 2, ' [ ! "$(grep IMP322OSTER /etc/hostname)" ] '), 
-	Task('Beginner','login.defs Password max days fixed', 2, '! [ "$(grep PASS_MAX_DAYS | grep 99999 /etc/login.defs)" ] '),
-	Task('Beginner','login.defs Password login retries fixed', 2, '! [ "$(grep 5000000 /etc/login.defs)" ] '),
+	Task('Beginner','login.defs Password max days fixed', 1, '! [ "$(grep PASS_MAX_DAYS | grep 99999 /etc/login.defs)" ] '),
+	Task('Beginner','login.defs Password login retries fixed', 1, '! [ "$(grep 5000000 /etc/login.defs)" ] '),
 	Task('Beginner','PAM Password complexity set', 5,' [ "$(grep ucredit=‐1 /etc/pam.d/common-password)" ] '),
 	Task('Beginner','CrewMate Password file removed', 2,' [ ! "$(ls -al /home/green/Desktop | grep CrewMatePasswords)" ] '),
 	Task('Returner','Bad README removed for Sudoers', 2, ' [ ! "$(ls /etc/sudoers.d | grep README)" ]'),
@@ -121,9 +120,9 @@ allTasks = [
 	Task('Beginner','SSHD X11 forwarding disabled', 1, ' [ "$(grep X11Forwarding /etc/ssh/sshd_config | grep no)" ]'),  
 
 	#Sysctl
-	Task('Returner','ASLR Randomization enabled', 1, ' [ "$(grep kernel.randomize_va_space /etc/sysctl.conf)" ]'),    
-	Task('Returner','ICMP TIME-WAIT ASSASINATION FIXED', 1, ' [ "$(grep net.ipv4.tcp_rfc1337 /etc/sysctl.conf)" ]'), 
-	Task('Returner','Protect against SYN-FLOODING', 1, ' [ "$(grep net.ipv4.tcp_syncookies /etc/sysctl.conf)" ]'), 
+	Task('Returner','ASLR Randomization enabled', 3, ' [ "$(grep kernel.randomize_va_space /etc/sysctl.conf)" ]'),    
+	Task('Returner','ICMP TIME-WAIT ASSASINATION FIXED', 3, ' [ "$(grep net.ipv4.tcp_rfc1337 /etc/sysctl.conf)" ]'), 
+	Task('Returner','Protect against SYN-FLOODING', 3, ' [ "$(grep net.ipv4.tcp_syncookies /etc/sysctl.conf)" ]'), 
 
 ]
 groups = [] #groups that must exist, or else a penalty
