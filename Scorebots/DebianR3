@@ -79,8 +79,8 @@ class Task:
 users = [User(mainUser), User('red'),  User('blue'),  User('yellow'), User('orange'), User('purple'),User('green') ] #If a user is deleted, you get a penalty
 services = [] #If a service is down, you get a penalty
 allTasks = [
-	Task('Beginner','Forensics 1', 1, ' [ ! "$(grep 14 /home/cyber/Desktop/Forensics1)" ]'),
-	Task('Beginner','Forensics 2', 1, ' [ ! "$(grep I4mth3Imposter /home/cyber/Desktop/Forensics2)" ]'),
+	Task('Beginner','Forensics 1', 5, ' [  "$(grep 14 /home/cyber/Desktop/Forensics1)" ]'),
+	Task('Beginner','Forensics 2', 5, ' [  "$(grep I4mth3Imposter /home/cyber/Desktop/Forensics2)" ]'),
 	Task('Beginner','Removed Unauthorized user imposter', 1, ' [ ! "$(grep imposter /etc/passwd)" ]'), 
 	Task('Beginner','firewall enabled', 1, ' [ ! "$(ufw status | grep inactive)" ]'),  
 	Task('Beginner','Removed Unauthorized HIDDEN user toor', 3, ' [ ! "$(grep toor /etc/passwd)" ]'), 
@@ -98,7 +98,7 @@ allTasks = [
 	Task('Beginner','Correct permissions set on /etc/shadow', 2, ' [ ! "$(stat -c "\%a \%n" /etc/shadow | grep 666)" ]'), #
 	Task('Beginner','Media Files removed', 2, ' [ ! "$(ls /home/yellow/Videos | grep AmongUsTrapRemix)" ]'),
 	Task('Beginner','Hidden Desktop file removed', 2, ' [ ! "$(ls -al /home/cyber/Desktop | grep virus)" ]'),
-	Task('Beginner','Firewall rule added', 4, ' [ "$(grep 21 /etc/ufw/user.rules)" ]'), 
+	Task('Beginner','Firewall rule added', 2, ' [ "$(grep 21 /etc/ufw/user.rules)" ]'), 
 	Task('Beginner','netcat backdoor removed', 5, ' [ ! "$(grep netcat /var/spool/cron/crontabs/root)" ]'), 
 	Task('Beginner','netcat service stopped', 3, ' [ ! "$(netstat -tulpn | grep netcat)" ]'), 
 	Task('Beginner','added users to electrical group', 2, ' [  "$(grep electrical /etc/group | grep red)" ]'), 
@@ -108,13 +108,12 @@ allTasks = [
 	Task('Beginner','login.defs Password max days fixed', 2, '! [ "$(grep 99999 /etc/login.defs)" ] '),
 	Task('Beginner','login.defs Password login retries fixed', 2, '! [ "$(grep 5000000 /etc/login.defs)" ] '),
 	Task('Beginner','PAM Password complexity set', 5,' [ "$(grep ucredit=‐1 /etc/pam.d/common-password)" ] '),
-	Task('Beginner','CrewMate Password file removed', 5,' [ ! "$(ls -al /home/green/Desktop | grep CrewMatePasswords)" ] '),
+	Task('Beginner','CrewMate Password file removed', 2,' [ ! "$(ls -al /home/green/Desktop | grep CrewMatePasswords)" ] '),
 	Task('Returner','Bad README removed for Sudoers', 2, ' [ ! "$(ls /etc/sudoers.d | grep README)" ]'),
 	Task('Returner','Bad BASHRC umask', 2, ' [ ! "$(grep umask ~/.bashrc | grep 444)" ]'),
 
 	#updates
-	#Task('Beginner','System downloads updates from MAIN server', 5, ' [  "$(grep http://archive.ubuntu.com/ubuntu /etc/apt/sources.list)" ]'),
-
+	Task('Beginner','System does NOT download updates from Chinese servers', 5, ' [ ! "$(grep ".cn."" /etc/apt/sources.list)" ]'),
 	#openssh
 	Task('Beginner','SSHD root login not permitted', 1, ' [ "$(grep PermitRoot /etc/ssh/sshd_config | grep no)" ]'),
 	Task('Beginner','SSHD correct protocol set', 1, ' [ "$(grep Protocol /etc/ssh/sshd_config | grep 2)" ]'),
