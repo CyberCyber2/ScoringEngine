@@ -24,7 +24,7 @@ class S(BaseHTTPRequestHandler):
         if (dKEY == "cool"):
             print("keys match")
             with open(OutputRaw, 'a') as file:
-                if (dTIME == int((time.time() / 60))): #if user sent time = our time(so they can't just change their PC time)
+                if (abs((dTIME) - int((time.time() / 60))) <= 3 ): #if user sent time = our time(so they can't just change their PC time)
                     print("Times match")
                     file.write(dUSR + "," + dSCORE +"," + str(dTIME) + "\n")  #Force time on client PC  
                     os.system('''awk 'BEGIN{ OFS = FS = "," } NR == 1 { base = $3 } { $3 -= base; print }'  < ''' + OutputRaw + ''' > ''' + FinalOutput)
