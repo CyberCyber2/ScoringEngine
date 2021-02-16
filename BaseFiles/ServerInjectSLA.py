@@ -3,6 +3,7 @@
 import matplotlib.pyplot as plt 
 import subprocess, platform, os
 import hashlib
+import time
 from difflib import SequenceMatcher
 path = "/home/cyber/Desktop"
 ##############
@@ -135,16 +136,19 @@ allTeams = [
 
 ########################################################################
 #LOOP FOR EACH IP ADDRESS
-fig = plt.figure(dpi=80)
-ax = fig.add_subplot(1,1,1)
-table_data=[["Teams:"], ["Internet"]] # start by making an empty array with the headings
-# table_data[0] will be the "property" row
-# table_data[1] will be the "address" row
-for t in allTeams:
-    table_data[0].append(t.getName())
-    table_data[1].append(str(checkInternet(t.getAddress())))
-table = ax.table(cellText=table_data, loc='center')
-table.set_fontsize(14)
-table.scale(1,4)
-ax.axis('off')
-plt.show()
+while (True): 
+	fig = plt.figure(dpi=80)
+	ax = fig.add_subplot(1,1,1)
+	table_data=[["Teams:"], ["Internet"]] # start by making an empty array with the headings
+	# table_data[0] will be the "property" row
+	# table_data[1] will be the "address" row
+	for t in allTeams:
+	    table_data[0].append(t.getName())
+	    table_data[1].append(str(checkInternet(t.getAddress())))
+	table = ax.table(cellText=table_data, loc='center')
+	table.set_fontsize(14)
+	table.scale(1,4)
+	ax.axis('off')
+	#plt.show()
+	plot.savefig("InjectSLA.png")
+	time.sleep(20)
