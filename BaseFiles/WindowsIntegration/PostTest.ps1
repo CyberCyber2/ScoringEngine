@@ -1,4 +1,4 @@
-$SERVER='https://10.4.2.29' 
+$SERVER='http://10.4.2.29' 
 $possible_users = @("joe", "bob", "tim")
 $data = $null
 $randSCR = $null
@@ -13,6 +13,6 @@ for ($i=1; $i -le 100; $i++) {
     $SCR = $randSCR + (Get-Random -Minimum -"2" -Maximum 3)
     $TimeInSeconds = (New-Timespan -start "01/01/1970" -end (get-date)).totalseconds.tostring().split(".")[0]
     $Body = $data -f $USR,$SCR,$TimeInSeconds,$key
-    Invoke-WebRequest -Uri $SERVER -Method POST -Body $Body   
+    Invoke-WebRequest -SkipCertificateCheck -Uri $SERVER -Method POST -Body $Body   
     sleep 5 
 }
