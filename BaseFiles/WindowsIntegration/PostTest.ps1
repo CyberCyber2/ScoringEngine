@@ -13,7 +13,7 @@ for ($i=1; $i -le 100; $i++) {
     $SCR = $randSCR + (Get-Random -Minimum -"2" -Maximum 3)
     $TimeInSeconds = (New-Timespan -start "01/01/1970" -end (get-date)).totalseconds.tostring().split(".")[0]
     $TimeInMinutes = [math]::Floor($TimeInSeconds / 60)
-    $Body = $data -f $USR,$SCR,$TimeInSeconds,$key
+    $Body = $data -f $USR,$SCR,$TimeInMinutes,$key
     Invoke-WebRequest -SkipCertificateCheck -Uri $SERVER -Method POST -Body $Body   
     sleep 5 
 }
