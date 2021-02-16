@@ -22,10 +22,13 @@ class S(BaseHTTPRequestHandler):
         dTIME = int(d.split(":")[2]) 
         dKEY = str(d.split(":")[3]) #key so anyone can't just run curl command(not very secure, but doubt they'll exploit it. KEY is in the obfuscated script on client)
         if (dKEY == "cool"):
+            print("keys match")
             with open(OutputRaw, 'a') as file:
                 if (dTIME == int((time.time() / 60))): #if user sent time = our time(so they can't just change their PC time)
+                    print("Times match")
                     file.write(dUSR + "," + dSCORE +"," + str(dTIME) + "\n")  #Force time on client PC  
-                    os.system('''awk 'BEGIN{ OFS = FS = "," } NR == 1 { base = $3 } { $3 -= base; print }'  < ''' + OutputRaw + ''' > ''' + FinalOutput)               
+                    os.system('''awk 'BEGIN{ OFS = FS = "," } NR == 1 { base = $3 } { $3 -= base; print }'  < ''' + OutputRaw + ''' > ''' + FinalOutput)
+                 
 
     def do_GET(self):
         logging.info("GET request,\nPath: %s\nHeaders:\n%s\n", str(self.path), str(self.headers))
@@ -45,7 +48,7 @@ class S(BaseHTTPRequestHandler):
         self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
 
 
-def run(server_class=HTTPServer, handler_class=S, port=443):
+def run(server_class=HTTPServer, handler_class=S, port=80):
     logging.basicConfig(level=logging.INFO)
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
