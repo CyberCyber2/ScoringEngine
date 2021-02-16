@@ -29,7 +29,7 @@ class S(BaseHTTPRequestHandler):
                     file.write(dUSR + "," + dSCORE +"," + str(dTIME) + "\n")  #Force time on client PC  
                     os.system('''awk 'BEGIN{ OFS = FS = "," } NR == 1 { base = $3 } { $3 -= base; print }'  < ''' + OutputRaw + ''' > ''' + FinalOutput)
                 else:
-                    print("Times do not match")
+                    print("Times do not match. Client Time: " + str(dTIME) + " SERVER TIME: " + str(int((time.time() / 60)))
                
 
     def do_GET(self):
