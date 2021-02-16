@@ -28,7 +28,9 @@ class S(BaseHTTPRequestHandler):
                     print("Times match")
                     file.write(dUSR + "," + dSCORE +"," + str(dTIME) + "\n")  #Force time on client PC  
                     os.system('''awk 'BEGIN{ OFS = FS = "," } NR == 1 { base = $3 } { $3 -= base; print }'  < ''' + OutputRaw + ''' > ''' + FinalOutput)
-                 
+                else:
+                    print("Times do not match")
+               
 
     def do_GET(self):
         logging.info("GET request,\nPath: %s\nHeaders:\n%s\n", str(self.path), str(self.headers))
