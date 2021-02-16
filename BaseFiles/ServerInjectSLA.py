@@ -15,10 +15,16 @@ class Team:
         return self.name
     def getAddress(self):
         return self.address
-##############
+
+########################################################################
+allTeams = [
+    Team('Team1', '192.168.1.144'),
+    Team('Team2', '127.0.0.1')
+]
+
+########################################################################
 def similar(a, b): #Just incase the hash has an extra space, don't feel like removing space
     return SequenceMatcher(None, a, b).ratio()
-##############
 #~~~~~~~~~~~~~~PING~~~~~~~~~~~~~~~#
 def checkInternet(ip):
     hostname = ip
@@ -34,19 +40,23 @@ import ftplib
 #You must place a checkfile in the ftp directory on the CLIENT
 #checkfile: file to look for on CLIENT
 #filehash: correct hash to check for
+
 def checkFTP(ip, port, checkfile, filehash):
 	path = '/home/cyber' #path on CLIENT
-	ftp = ftplib.FTP("127.0.0.1") 
-	ftp.login("cyber", "cyber") 
-	ftp.cwd(path)
-	ftp.retrbinary("RETR " + checkfile, open(checkfile, 'wb').write)
-	f = "/home/cyber/Desktop/" + checkfile #FILE DOWNLOADED FROM CLIENT TO SERVER
-	checkHash = os.popen(("sha1sum " + f + "| cut -d' ' -f1")).read()
-	if (float(similar(checkHash,filehash)) >= 0.9):
-		return ("OK")
-	else:
+	try:
+		ftp = ftplib.FTP(ip) 
+		ftp.login("cyber", "cyber")
+		ftp.cwd(path)
+		ftp.retrbinary("RETR " + checkfile, open(checkfile, 'wb').write)
+		f = "/home/cyber/Desktop/" + checkfile #FILE DOWNLOADED FROM CLIENT TO SERVER
+		checkHash = os.popen(("sha1sum " + f + "| cut -d' ' -f1")).read()
+		if (float(similar(checkHash,filehash)) >= 0.9):
+			return ("OK")
+		else:
+			return ("Fail")
+		ftp.quit()
+	except Exception as e:
 		return ("Fail")
-	ftp.quit()
 
 #~~~~~~~~~~~~~~SMTP~~~~~~~~~~~~~~~#
 from smtplib import SMTP
@@ -129,26 +139,23 @@ def check_ssh(ip, port, user, private_key):
         return ("Fail")
 
 ########################################################################
-allTeams = [
-    Team('Team1', '123 Test Road'),
-    Team('Team2', '541 Test Court')
-]
-
-########################################################################
 #LOOP FOR EACH IP ADDRESS
+for t in allTeams:
+	print("Internet Check: " + str(t.getName()) + " " + checkInternet(t.getAddress()))
 while (True): 
 	fig = plt.figure(dpi=80)
 	ax = fig.add_subplot(1,1,1)
-	table_data=[["Teams:"], ["Internet"]] # start by making an empty array with the headings
+	table_data=[["Teams:"], ["Internet"], ["FTP"]] # start by making an empty array with the headings
 	# table_data[0] will be the "property" row
 	# table_data[1] will be the "address" row
 	for t in allTeams:
-	    table_data[0].append(t.getName())
-	    table_data[1].append(str(checkInternet(t.getAddress())))
+		table_data[0].append(t.getName())
+		table_data[1].append(str(checkInternet (str(t.getAddress()) )))
+		table_data[2].append(str(checkFTP(str(t.getAddress()),"21", "FTPCHECK.txt", "d5d94ad442491a5b5c8fbd2d4cc33b506b5d1af4")))
 	table = ax.table(cellText=table_data, loc='center')
 	table.set_fontsize(14)
 	table.scale(1,4)
 	ax.axis('off')
 	#plt.show()
-	plot.savefig("InjectSLA.png")
+	plt.savefig("InjectSLA.png")
 	time.sleep(20)
