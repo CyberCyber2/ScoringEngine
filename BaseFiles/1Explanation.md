@@ -17,6 +17,9 @@ If you are using a server with IP address of 192.168.1.5 for example, type TeamS
 
 ScoringEngine.py:
 This is not installed directly. install.py runs the emojify obfuscation methon on scorebot.py, deletes scorebot.py and replaces it with an obfuscated version called ScoringEngine.py so people can't just look inside for the answers. When the system reboots, the ScoringEngine script may stop. You can edit the install.py to add something into crontab with a message saying do not delete this. I just tell people to just re-run the scoring engine on startup.
+
+PostTest.py
+This isn't used. It is just used to test the server. It sends random data to the server that simulates Scorebot.py/ScoringEngine.py sending user's scores to the server.
 ==========FILES ON THE SERVER==========
 Server.py:
 ONLY put this on the server if you want one. A server is a separate Linux machine which the clients send their scores to(if configured). The scorebot.py will read the settings in TeamInfo.py to tell whether to send scores or not. If you are not using a Server, don't bother with configuring a server(TeamInfo.py is still needed).
