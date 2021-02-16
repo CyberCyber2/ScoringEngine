@@ -7,8 +7,12 @@ $key = 'cool'
 
 for ($i=1; $i -le 100; $i++) {
     $randUSR = Get-Random -Minimum 0 -Maximum 2
-    $randSCR = Get-Random -Minimum "-1" -Maximum 4
-    $data = $possible_users[$randUSR].toString() + ":" + $($randSCR += Get-Random -Minimum "-2" -Maximum 3) + ":" + $((New-TimeSpan -Start (Get-Date "01/01/1970") -End (Get-Date)).TotalSeconds) + ":" + $key.toString()
-    Invoke-WebRequest -Uri $SERVER -Method POST -Body $data    
+    $randSCR = Get-Random -Minimum -1 -Maximum 4
+    $data = '{0}:{1}:{2}:{3}'
+    $USR = $possible_users[$randUSR].toString()
+    $SCR = $randSCR + (Get-Random -Minimum -"2" -Maximum 3)
+    $TimeInSeconds = (New-Timespan -start "01/01/1970" -end (get-date)).totalseconds.tostring().split(".")[0]
+    $Body = $data -f $USR,$SCR,$TimeInSeconds,$key
+    Invoke-WebRequest -Uri $SERVER -Method POST -Body $Body   
     sleep 5 
 }
