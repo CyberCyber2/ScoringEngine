@@ -7,7 +7,7 @@ $key = 'cool'
 
 for ($i=1; $i -le 100; $i++) {
     $randUSR = Get-Random -Minimum 0 -Maximum 2
-    $randSCR = Get-Random -Minimum -1 -Maximum 4
+    $randSCR = Get-Random -Minimum -"1" -Maximum 4
     $data = '{0}:{1}:{2}:{3}'
     $USR = $possible_users[$randUSR].toString()
     $SCR = $randSCR + (Get-Random -Minimum -"2" -Maximum 3)
