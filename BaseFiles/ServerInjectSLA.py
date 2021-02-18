@@ -11,15 +11,28 @@ class Team:
     def __init__(self, name, address):
         self.name = name
         self.address = address
+        self.internetHIST = []
     def getName(self):
         return self.name
     def getAddress(self):
         return self.address
-
+    def countUptime(self, service): 
+        if service == "internet":
+            if (checkInternet(self.address) == "Ok"):
+                self.internetHIST.append("1")
+                print("Internet reliable, added 1")
+                print(self.internetHIST)
+            else:
+                self.internetHIST.append("0")
+                print("Internet unreliable, added 0")
+                print(self.internetHIST)
+            internetReliability = str(self.internetHIST.count("1") + self.internetHIST.count("0") * (-5))
+            return internetReliability
 ########################################################################
 allTeams = [
-    Team('Team1', '192.168.1.144'),
-    Team('Team2', '127.0.0.1')
+    Team('Saffron', '192.168.15.129'),
+    Team('Crystal', '127.0.0.1'),
+    Team('FreeAgents', '192.168.1.145')
 ]
 
 ########################################################################
@@ -45,7 +58,7 @@ def checkFTP(ip, port, checkfile, filehash):
 	path = '/home/cyber' #path on CLIENT
 	try:
 		ftp = ftplib.FTP(ip) 
-		ftp.login("cyber", "cyber")
+		ftp.login("joe", "joe")
 		ftp.cwd(path)
 		ftp.retrbinary("RETR " + checkfile, open(checkfile, 'wb').write)
 		f = "/home/cyber/Desktop/" + checkfile #FILE DOWNLOADED FROM CLIENT TO SERVER
@@ -139,23 +152,17 @@ def check_ssh(ip, port, user, private_key):
         return ("Fail")
 
 ########################################################################
-#LOOP FOR EACH IP ADDRESS
-for t in allTeams:
-	print("Internet Check: " + str(t.getName()) + " " + checkInternet(t.getAddress()))
 while (True): 
-	fig = plt.figure(dpi=80)
-	ax = fig.add_subplot(1,1,1)
-	table_data=[["Teams:"], ["Internet"], ["FTP"]] # start by making an empty array with the headings
-	# table_data[0] will be the "property" row
-	# table_data[1] will be the "address" row
-	for t in allTeams:
-		table_data[0].append(t.getName())
-		table_data[1].append(str(checkInternet (str(t.getAddress()) )))
-		table_data[2].append(str(checkFTP(str(t.getAddress()),"21", "FTPCHECK.txt", "d5d94ad442491a5b5c8fbd2d4cc33b506b5d1af4")))
-	table = ax.table(cellText=table_data, loc='center')
-	table.set_fontsize(14)
-	table.scale(1,4)
-	ax.axis('off')
-	#plt.show()
-	plt.savefig("InjectSLA.png")
-	time.sleep(20)
+    fig = plt.figure(dpi=80)
+    ax = fig.add_subplot(1,1,1)
+    table_data=[[" "], ["Internet"]]
+    for t in allTeams:
+        table_data[0].append(t.getName())
+        table_data[1].append(str(checkInternet (str(t.getAddress()) )) + ":" + str(t.countUptime("internet")))
+        #table_data[2].append(str(checkFTP(str(t.getAddress()),"21", "FTPCHECK.txt", "da39a3ee5e6b4b0d3255bfef95601890afd80709")) + ":" + countUptime(ftp))
+    table = ax.table(cellText=table_data, loc='center')
+    table.set_fontsize(14)
+    table.scale(1,4)
+    ax.axis('off')
+    plt.savefig("Check.png")
+    time.sleep(60)
