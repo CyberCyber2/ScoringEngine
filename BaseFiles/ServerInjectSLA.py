@@ -5,18 +5,24 @@ import subprocess, platform, os
 import hashlib
 import time
 from difflib import SequenceMatcher
-path = "/home/cyber/Desktop"
-##############
+###############CONFIG###################
+ftpFile = "FTPCHECK.txt"
+ftpFileHash = "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+ftpPath = "/home/joe/"
+checkInterval = 10
+########################################
 class Team:
     def __init__(self, name, address):
         self.name = name
         self.address = address
         self.internetHIST = []
+        self.ftpHIST = []
     def getName(self):
         return self.name
     def getAddress(self):
         return self.address
     def countUptime(self, service): 
+
         if service == "internet":
             if (checkInternet(self.address) == "Ok"):
                 self.internetHIST.append("1")
@@ -28,13 +34,24 @@ class Team:
                 print(self.internetHIST)
             internetReliability = str(self.internetHIST.count("1") + self.internetHIST.count("0") * (-5))
             return internetReliability
+
+        if service == "ftp":
+            if (checkFTP(str(self.getAddress()),"21",ftpFile, ftpFileHash) == "Ok"):
+                self.ftpHIST.append("1")
+                print("ftp reliable, added 1")
+                print(self.ftpHIST)
+            else:
+                self.ftpHIST.append("0")
+                print("ftp unreliable, added 0")
+                print(self.ftpHIST)
+            ftpReliability = str(self.ftpHIST.count("1") + self.ftpHIST.count("0") * (-5))
+            return ftpReliability
 ########################################################################
 allTeams = [
     Team('Saffron', '192.168.15.129'),
     Team('Crystal', '127.0.0.1'),
     Team('FreeAgents', '192.168.1.145')
 ]
-
 ########################################################################
 def similar(a, b): #Just incase the hash has an extra space, don't feel like removing space
     return SequenceMatcher(None, a, b).ratio()
@@ -47,30 +64,29 @@ def checkInternet(ip):
     else:
         pingstatus = "Fail"
     return pingstatus
-
 #~~~~~~~~~~~~~~FTP~~~~~~~~~~~~~~~#
 import ftplib
 #You must place a checkfile in the ftp directory on the CLIENT
 #checkfile: file to look for on CLIENT
 #filehash: correct hash to check for
-
 def checkFTP(ip, port, checkfile, filehash):
-	path = '/home/cyber' #path on CLIENT
-	try:
-		ftp = ftplib.FTP(ip) 
-		ftp.login("joe", "joe")
-		ftp.cwd(path)
-		ftp.retrbinary("RETR " + checkfile, open(checkfile, 'wb').write)
-		f = "/home/cyber/Desktop/" + checkfile #FILE DOWNLOADED FROM CLIENT TO SERVER
-		checkHash = os.popen(("sha1sum " + f + "| cut -d' ' -f1")).read()
-		if (float(similar(checkHash,filehash)) >= 0.9):
-			return ("OK")
-		else:
-			return ("Fail")
-		ftp.quit()
-	except Exception as e:
-		return ("Fail")
-
+    try:
+        ftp = ftplib.FTP(ip) 
+        ftp.login("joe", "joe")
+        ftp.cwd(ftpPath)
+        ftp.retrbinary("RETR " + checkfile, open(checkfile, 'wb').write)
+        f = "/home/cyber/Desktop/" + checkfile #FILE DOWNLOADED FROM CLIENT TO SERVER
+        checkHash = os.popen(("sha1sum " + f + "| cut -d' ' -f1")).read()
+        if (float(similar(checkHash,filehash)) >= 0.9):
+            print("FTP hashes match")
+            return ("Ok")
+        else:
+            print("Client Hash: " + checkHash + " Server Hash: " + ftpFileHash)
+            return ("Fail")
+        ftp.quit()
+    except Exception as e:
+        print("FTP hash exception: " + str(e) + " for " + str(ip))
+        return ("Fail")
 #~~~~~~~~~~~~~~SMTP~~~~~~~~~~~~~~~#
 from smtplib import SMTP
 def check_smtp(ip, port):
@@ -80,7 +96,6 @@ def check_smtp(ip, port):
         return ("Ok")
     except Exception as e:
         return ("Fail")
-
 #~~~~~~~~~~~~~~APACHE2~~~~~~~~~~~~~~~#
 #check to see if a certain text appears on the webserver
 
@@ -150,19 +165,18 @@ def check_ssh(ip, port, user, private_key):
         if str(e) == "Authentication failed." and not private_key:
             return ("Ok")
         return ("Fail")
-
 ########################################################################
 while (True): 
     fig = plt.figure(dpi=80)
     ax = fig.add_subplot(1,1,1)
-    table_data=[[" "], ["Internet"]]
+    table_data=[[" "], ["FTP"]]
     for t in allTeams:
         table_data[0].append(t.getName())
-        table_data[1].append(str(checkInternet (str(t.getAddress()) )) + ":" + str(t.countUptime("internet")))
-        #table_data[2].append(str(checkFTP(str(t.getAddress()),"21", "FTPCHECK.txt", "da39a3ee5e6b4b0d3255bfef95601890afd80709")) + ":" + countUptime(ftp))
+        #table_data[1].append(str(checkInternet (str(t.getAddress()) )) + ":" + str(t.countUptime("internet")))
+        table_data[1].append(str(checkFTP(str(t.getAddress()),"21", ftpFile, ftpFileHash)) + ":" + str(t.countUptime("ftp")))
     table = ax.table(cellText=table_data, loc='center')
     table.set_fontsize(14)
     table.scale(1,4)
     ax.axis('off')
     plt.savefig("Check.png")
-    time.sleep(60)
+    time.sleep(checkInterval)
