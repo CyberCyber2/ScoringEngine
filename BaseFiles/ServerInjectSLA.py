@@ -178,5 +178,5 @@ while (True):
     table.set_fontsize(14)
     table.scale(1,4)
     ax.axis('off')
-    plt.savefig("Check.png")
+    plt.savefig("InjectSLA.png")
     time.sleep(checkInterval)
