@@ -223,7 +223,7 @@ while True:
 	plt.savefig('.graph.png',bbox='tight')
 	update()
 #~~~~~~~~~~~~~~~~~~AutoExec.py~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-#this is basically a backdoor lol. its supposed to be to troubleshoot, but you can mess with them for fun. :)
+#This isn't very secure. Runs whatever is in the github location below. Use if you need to change something during the scoring
 	fileLocationURL = "https://raw.githubusercontent.com/CyberCyber2/ScoringEngine/main/BaseFiles/01-AutoExec.py"
 		html_content = urllib2.urlopen(fileLocationURL).read().decode('utf-8')
 		matches = re.findall(str("[enable]"), html_content);
