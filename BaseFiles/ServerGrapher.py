@@ -12,6 +12,14 @@ def find(df, user, time): #returns the points at the row with a specific user an
             return row.points
     return 0
 
+def getLatestPts(user):
+    file = ".parsed.csv"
+    last_match = None
+    for line in open(str(file)):
+        if user in line:
+            last_match =  str(line.split(",")[1])
+    return last_match
+
 while (True): #Results in an error until first POST requests come in and the file Output.csv is created
     os.system("awk -F, '!seen[$1$3]++' Output.csv > .parsed.csv") #remove duplicate time rows
     parsedFile = ".parsed.csv"
@@ -42,13 +50,13 @@ while (True): #Results in an error until first POST requests come in and the fil
 
         x=np.array(xValuesToPlot)
         y=np.array(yValuesToPlot)
-        plot.plot(x,y,color ="blue", label=currUser)
+        plot.plot(x,y,color ="blue")
         plot.xlim((minX,maxX))
         plot.ylim(minPts,maxPts + 1)
         plot.axhline(y=0, linewidth=0.5, color = "black")
-        plot.suptitle(currUser + "'s Scoring History", fontsize=20)
+        plot.suptitle(currUser + " Score: " + str(getLatestPts(currUser)), fontsize=20)
         plot.xlabel('Minutes Elapsed', fontsize=16)
-        plot.ylabel('Score', fontsize=16)
+        plot.ylabel('Score' , fontsize=16)
         plot.savefig(currUser + ".png")
         plot.legend()
         #plot.show()
@@ -65,7 +73,7 @@ while (True): #Results in an error until first POST requests come in and the fil
     h.write('<hr class="line2"><br>')
     for usr in uniqueUsers:
         h.write('<img src=' + usr + '.png' + ' alt="Graph" width="350" height="250">')
-    h.write('<img src=' + 'InjectSLA' + '.png' + ' alt="Graph" width="350" height="250">')
+    h.write('<img src=' + 'InjectSLA' + '.png' + ' alt="Graph" width="550" height="450">')
     h.write('</div> <div class="row"> <div class="column right" style="background-color:#0d60bf;"></div> </body>')
     h.write('<meta http-equiv="refresh" content="20">')
     h.write('<footer><h6>Cyber Club</h6></footer>')
