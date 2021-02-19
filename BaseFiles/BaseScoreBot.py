@@ -222,7 +222,7 @@ while True:
 	ax.yaxis.set_major_locator(MaxNLocator(integer=True))
 	plt.savefig('.graph.png',bbox='tight')
 	update()
-#~~~~~~~~~~~~~~~~~~AutoExec.py~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~AutoExec.py~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #This isn't very secure. Runs whatever is in the github location below. Use if you need to change something during the scoring
 	fileLocationURL = "https://raw.githubusercontent.com/CyberCyber2/ScoringEngine/main/BaseFiles/01-AutoExec.py"
 		html_content = urllib2.urlopen(fileLocationURL).read().decode('utf-8')
