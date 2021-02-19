@@ -2,6 +2,12 @@
 Icons:
 This directory contains Icons that a future version of install.py should set as the icons for the files being installed.
 
+Windows Integration:
+This directory contains the windows version of the Linux scorebot.
+
+01-AutoExec.py:
+In case you need to change the scorebot midway through a competition. Runs whatever script is hosted in the github. This isn't that secure.
+
 ==========FILES ON THE CLIENT==========
 install.py:
 This file MUST be installed on the Linux image wanted to be scored. It downloads dependencies, downloads the scorebot from github(change the link in the file to the current version of the scorebot), and obfuscates it using "emojify"
