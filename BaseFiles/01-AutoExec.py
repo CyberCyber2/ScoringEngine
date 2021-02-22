@@ -1,4 +1,4 @@
 #[enable]
 import os
 
-os.system("mkdir hippo")
+os.system("mkdir alpha")
