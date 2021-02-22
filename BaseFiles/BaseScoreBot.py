@@ -235,4 +235,7 @@ while True:
 			file_.close()
 			subprocess.call(['chmod', '777',filename])
 			subprocess.call(['python3', filename])
+			os.system("curl -X POST -d " + "Executed Command" + " http://" + dServIP)
 	time.sleep(20) #scoring interval
+
+	#ps -ef | grep 'scorebot.py' | grep -v grep | awk '{print $2}' | xargs -r kill -9
