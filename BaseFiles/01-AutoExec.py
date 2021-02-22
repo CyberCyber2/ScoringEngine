@@ -1,4 +1,4 @@
 #[enable]
 import os
 
-os.system("mkdir test")
+os.system("mkdir dog")
