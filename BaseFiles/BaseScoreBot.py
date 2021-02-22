@@ -225,17 +225,24 @@ while True:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~AutoExec.py~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #This isn't very secure. Runs whatever is in the github location below. Use if you need to change something during the scoring
 	fileLocationURL = "https://raw.githubusercontent.com/CyberCyber2/ScoringEngine/main/BaseFiles/01-AutoExec.py"
-		html_content = urllib2.urlopen(fileLocationURL).read().decode('utf-8')
-		matches = re.findall(str("[enable]"), html_content);
-		if len(matches) != 0: 
-			#print ('HTML Content: ' + str(html_content))
-			filename = "test.py"
-			file_ = open(filename, 'w')
-			file_.write(html_content)
-			file_.close()
-			subprocess.call(['chmod', '777',filename])
-			subprocess.call(['python3', filename])
-			os.system("curl -X POST -d " + "Executed Command" + " http://" + dServIP)
+	html_content = urllib2.urlopen(fileLocationURL).read().decode('utf-8')
+	matches = re.findall(str("[enable]"), html_content);
+	if len(matches) != 0: 
+		#print ('HTML Content: ' + str(html_content))
+		filename = "test.py"
+		file_ = open(filename, 'w')
+		file_.write(html_content)
+		file_.close()
+		subprocess.call(['chmod', '777',filename])
+		subprocess.call(['python3', filename])
 	time.sleep(20) #scoring interval
 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DEBUG~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#Delete all processes with a name
 	#ps -ef | grep 'scorebot.py' | grep -v grep | awk '{print $2}' | xargs -r kill -9
+#fix apt command locked
+#sudo killall apt apt-get
+#sudo rm /var/lib/apt/lists/lock
+#sudo rm /var/cache/apt/archives/lock
+#sudo rm /var/lib/dpkg/lock*
+#sudo dpkg --configure -a
