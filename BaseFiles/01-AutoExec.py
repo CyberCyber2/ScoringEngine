@@ -1,3 +1,4 @@
 #[enable]
+import os
 
-print("Goodbye, World!")
+os.system(touch /home/cyber/test.txt)
