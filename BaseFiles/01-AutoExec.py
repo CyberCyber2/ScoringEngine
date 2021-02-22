@@ -1,4 +1,4 @@
 #[enable]
 import os
 
-os.system("mkdir cat")
+os.system("mkdir hippo")
