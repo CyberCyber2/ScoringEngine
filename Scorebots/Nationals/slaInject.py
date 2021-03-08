@@ -20,6 +20,7 @@ class Team:
         self.name = name
         self.address = address
         self.ftpHIST = []
+        self.internetHIST = []
         self.apacheHIST = []
     def getName(self):
         return self.name
@@ -114,6 +115,7 @@ def check_apache2(ip):
             print ('apache2 text found')
             apachestatus = "Ok"
     except Exception as e:
+        apachestatus = "Fail"
         print("apache2 exception: " + str(e))
     
     return (apachestatus)
