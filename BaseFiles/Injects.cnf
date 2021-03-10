@@ -5,5 +5,5 @@ apacheTestString
 
 [Desc]
 "Linux: Configure VSFTPD so that the file stored at (url) is placed in the default FTP share"
-"Linux: Change the default SSH port to 2222"
-"Linux: Create the SAMBA share called Public and allow guests to access the share"
+"Linux2: Change the default SSH port to 2222"
+"Linux3: Create the SAMBA share called Public and allow guests to access the share"
