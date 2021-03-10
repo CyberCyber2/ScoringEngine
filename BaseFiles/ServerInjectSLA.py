@@ -12,7 +12,21 @@ import os.path
 from urllib.error import HTTPError, URLError
 import logging
 import socket
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+import ftplib
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#checkInterval=5
+ftpFile = ""
+ftpFileHash = ""
+ftpPath = ""
+ftpUSR = ""
+ftpPWD = ""
+serverFTPDir = ""
+apacheCheck = ""
+apacheWebsite = ""
+dataDirectory = ""
+mySQL_Query = "" 
+smbUSR = ""
+smbPWD = ""
+smbSHR = ""
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 class Team:
     def __init__(self, name, address):
@@ -86,7 +100,7 @@ class CaseConfigParser(SafeConfigParser):
      def optionxform(self, optionstr):
          return optionstr
 allTeams = [
-    Team('Computer1', '192.168.1.240'),
+    Team('Computer1', '10.4.2.19'),
     Team('Computer2', '127.0.0.1')
 ]
 def similar(a, b): #Just incase the hash has an extra space, don't feel like removing space
@@ -106,11 +120,17 @@ def checkInternet(ip):
 def checkFTP(ip, port, checkfile, filehash):
     ftpstatus = "Fail"
     try:
+        print("FILE HASH: " + filehash)
+        print("CHECK FILE:" + checkfile)
+        print("ftpUSR:" + ftpUSR)
+        print("ftpPWD" + ftpPWD)
+        print("ftpPath:" + ftpPath)
+        print("serverFTPDir:" + serverFTPDir)
         ftp = ftplib.FTP(ip) 
-        ftp.login("joe", "joe")
+        ftp.login(ftpUSR, ftpPWD)
         ftp.cwd(ftpPath)
         ftp.retrbinary("RETR " + checkfile, open(checkfile, 'wb').write)
-        f = "/home/cyber/Desktop/" + checkfile #FILE DOWNLOADED FROM CLIENT TO SERVER
+        f = "/home/" + serverFTPDir + "/Desktop/" + checkfile #FILE DOWNLOADED FROM CLIENT TO SERVER
         checkHash = os.popen(("sha1sum " + f + "| cut -d' ' -f1")).read()
         if (float(similar(checkHash,filehash)) >= 0.9):
             print("FTP hashes match")
@@ -188,12 +208,21 @@ def grapherFunction():
     while (True): 
     #~~~~~~~~Variables~~~~~~~~#
         #Below Parameters on Injects.cnf. Must be same for ALL clients
+        global ftpFile
+        global ftpFileHash
+        global ftpPath
+        global serverFTPDir
+        global ftpUSR
+        global ftpPWD
         config = CaseConfigParser(os.environ)
         config.read('Injects.cnf')
         checkInterval = int(config.get('General', 'checkInterval'))
         ftpFile = config.get('General', 'ftpFile')
         ftpFileHash = config.get('General', 'ftpFileHash')
         ftpPath = config.get('General', 'ftpPath') #Path on the client where the file to be checked is stored
+        serverFTPDir = config.get('General', 'serverFTPDir')
+        ftpUSR = config.get('General', 'ftpUSR')
+        ftpPWD = config.get('General', 'ftpPWD')  
         apacheCheck = config.get('General', 'apacheCheck') #string to look for in apache2 page
         apacheWebsite = config.get('General', 'apacheWebsite') #page to look for for string
         dataDirectory = config.get('General', 'dataDirectory') #directory on server to store data
@@ -204,15 +233,15 @@ def grapherFunction():
     #~~~~~~~~~PLOT~~~~~~~~~# 
         fig = plt.figure(dpi=80)
         ax = fig.add_subplot(1,1,1)
-        table_data=[[" "], ["Samba"] ]
+        table_data=[[" "], ["FTP"] ]
         for t in allTeams:
             table_data[0].append(t.getName())
             #table_data[1].append(str(checkInternet (str(t.getAddress()) )) + ":" + str(t.countUptime("internet")))
-            #table_data[2].append(str(checkFTP(str(t.getAddress()),"21", ftpFile, ftpFileHash)) + ":" + str(t.countUptime("ftp")))
+            table_data[1].append(str(checkFTP(str(t.getAddress()),"21", ftpFile, ftpFileHash)) + ":" + str(t.countUptime("ftp")))
             #table_data[1].append(str(t.getApache()) + ":" + str(t.countUptime("apache")))
 
             #SMB VARIABLE PROBLEM
-            table_data[1].append(str( checkSMB(t.getAddress(), t.getName())   ) + ":" + str(t.countUptime("samba")))
+            #table_data[1].append(str( checkSMB(t.getAddress(), t.getName())   ) + ":" + str(t.countUptime("samba")))
         table = ax.table(cellText=table_data, loc='center')
         table.set_fontsize(14)
         table.scale(1,4)
