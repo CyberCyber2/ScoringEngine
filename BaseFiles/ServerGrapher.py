@@ -5,6 +5,7 @@ import matplotlib.pyplot as plot
 import numpy as np
 import os,sys
 from datetime import datetime
+import configparser
 #################################
 def find(df, user, time): #returns the points at the row with a specific user and time
     for i, row in df.iterrows():
@@ -71,6 +72,19 @@ while (True): #Results in an error until first POST requests come in and the fil
     h.write('<p><span style="font-family: arial, helvetica, sans-serif; text-align: center;"><strong>' + "Report Generated at: " + str(datetime.utcnow()) + ' </strong></span></p>')
     h.write('<style> div { background-image: url(https://i.pinimg.com/originals/15/79/25/157925e28f33c43a30973791b2f787f4.jpg); background-blend-mode: lighten; } </style>')
     h.write('<hr class="line2"><br>')
+    #~~~~~~~ADD SLAs~~~~~~~#
+    config = configparser.ConfigParser(allow_no_value=True)
+    config.read("Configs.cnf")
+    for sect in config.sections():
+        print('Section:',sect)
+        if sect == "Desc":
+            count = 1
+            for k, v in config.items(sect):
+                print("Writing " + str(k))
+                h.write('<h1>' + "Inject " + str(count) + ":" + '</h1>')
+                h.write('<p1>' + str(k) + '</p1>')
+                count = count + 1
+                #~~~~~~~~~~~~~~~#
     for usr in uniqueUsers:
         h.write('<img src=' + usr + '.png' + ' alt="Graph" width="350" height="250">')
     h.write('<img src=' + 'InjectSLA' + '.png' + ' alt="Graph" width="550" height="450">')
