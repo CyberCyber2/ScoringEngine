@@ -76,7 +76,7 @@ while (True): #Results in an error until first POST requests come in and the fil
     h.write('<hr class="line2"><br>')
     #~~~~~~~ADD SLAs~~~~~~~#
     config = configparser.ConfigParser(allow_no_value=True)
-    config.read("Configs.cnf")
+    config.read("Injects.cnf")
     for sect in config.sections():
         print('Section:',sect)
         if sect == "Desc":
