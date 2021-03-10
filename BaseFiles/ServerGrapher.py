@@ -3,10 +3,12 @@ import time
 from pandas import Series
 import matplotlib.pyplot as plot
 import numpy as np
-import os,sys
+import subprocess, platform, os, sys
 from datetime import datetime
 import configparser
-#################################
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+mainUser = "cyber"
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 def find(df, user, time): #returns the points at the row with a specific user and time
     for i, row in df.iterrows():
         if row.time == time and row.user == user:
@@ -84,11 +86,15 @@ while (True): #Results in an error until first POST requests come in and the fil
                 h.write('<h1>' + "Inject " + str(count) + ":" + '</h1>')
                 h.write('<p1>' + str(k) + '</p1>')
                 count = count + 1
-                #~~~~~~~~~~~~~~~#
+    #~~~~~~~Make Graphs~~~~~~~#
     for usr in uniqueUsers:
         h.write('<img src=' + usr + '.png' + ' alt="Graph" width="350" height="250">')
     h.write('<img src=' + 'InjectSLA' + '.png' + ' alt="Graph" width="550" height="450">')
     h.write('</div> <div class="row"> <div class="column right" style="background-color:#0d60bf;"></div> </body>')
     h.write('<meta http-equiv="refresh" content="20">')
     h.write('<footer><h6>Cyber Club</h6></footer>')
+    #~~~~~~~Move images to Apache2 Server~~~~~~~#
+    os.system("cp /home/" + mainUser + "/Desktop/*.png /var/www/html")
+    #subprocess.call(['cp', "/home/" + mainUser + "/Desktop/*.png", "/var/www/html/"])
+    subprocess.call(['cp', "ScoreReport.html", "/var/www/html/index.html"])
     time.sleep(20)
