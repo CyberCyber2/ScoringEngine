@@ -15,9 +15,10 @@
 	smbSHR=Public
 
 [Injects]
-	ftpFileHash=true
-	#ftpNewPort
-	apacheTestString=false
+	#FTP 
+	#SMB
+	smbCurrInject=1 #Download (teamname.txt) from smbSHR
+	#APACHE
 
 [Desc]
 	Inject1="Linux - Configure VSFTPD so that the file stored at (url) is placed in the default FTP share"
