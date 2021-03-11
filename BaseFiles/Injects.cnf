@@ -2,7 +2,10 @@
 	checkInterval=5
 	ftpFile=FTPCHECK.txt
 	ftpFileHash=da39a3ee5e6b4b0d3255bfef95601890afd80709
-	ftpPath=/home/joe/
+	ftpUSR=client
+	ftpPWD=client
+	ftpPath=/home/client/
+	serverFTPDir=/home/server/Desktop
 	apacheCheck=Check2132
 	apacheWebsite=index.html
 	dataDirectory=/home/server/Desktop/data/
