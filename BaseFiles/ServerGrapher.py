@@ -82,9 +82,9 @@ while (True): #Results in an error until first POST requests come in and the fil
         if sect == "Desc":
             count = 1
             for k, v in config.items(sect):
-                print("Writing " + str(k))
+                print("Writing " + str(v))
                 h.write('<h1>' + "Inject " + str(count) + ":" + '</h1>')
-                h.write('<p1>' + str(k) + '</p1>')
+                h.write('<p1>' + str(v) + '</p1>')
                 count = count + 1
     #~~~~~~~Make Graphs~~~~~~~#
     for usr in uniqueUsers:
