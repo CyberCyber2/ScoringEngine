@@ -1,3 +1,4 @@
+#WARNING: DO NOT PUT QUOTES FOR VALUES BELOW
 [General]
 	checkInterval=5
 	ftpFile=FTPCHECK.txt
@@ -6,22 +7,22 @@
 	ftpPWD=anonymous
 	ftpPath=/home/client/
 	serverFTPDir=/home/server/Desktop
-	apacheCheck=CheckString12
+	apacheCheck=Erdie
 	apacheWebsite=index.html
 	dataDirectory=/home/server/Desktop/data/
 	mySQL_Query="SELECT name, address FROM customers"
-	smbUSR=anonymous
-	smbPWD=anonymous
-	smbSHR=Public
-	smbSHRFile="CustomerData.txt"
-	sshUSR="ssh"
-	sshPWD="ssh"
+	smbUSR=test
+	smbPWD=test
+	smbSHR=sambashare
+	smbSHRFile=CustomerData.txt
+	sshUSR=test
+	sshPWD=test
 	smbPRT=22
 [Injects]
 #SMB
 	#1-->download teamname.txt from smbSHR
 	#2-->download smbSHRFile from the sambashare
-	smbCurrInject=1 #Download (teamname.txt) from smbSHR
+	smbCurrInject=1
 #SSH
 	#1-->check for connectivity
 	sshCurrInject=1
