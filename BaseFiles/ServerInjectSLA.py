@@ -185,6 +185,22 @@ def checkSMB(ip, teamName, cI):
     else:
         print("SMB ERROR: Inject ID not found for " + cI + " of type: " + str(type(cI)))
 
+     if (int(cI) == 2):
+        tempFileCheck = str(smbSHRFile) #tell them to add this file on client
+        try:
+            subprocess.call(['smbget', "smb://" + str(ip) + "/" + str(smbSHR) + "/" + str(tempFileCheck), "-U" , smbUSR + '%' + smbPWD])
+            if not (os.path.isfile(str(tempFileCheck))):
+                print("Error: could not get SMB file: " + str(tempFileCheck) + " from " + str(ip))
+                return ("Fail")
+            subprocess.call(['rm', '-rf', str(tempFileCheck)])
+            return("Ok")
+            print ("Deleted file: " +  str(tempFileCheck))
+        except Exception as e:
+            print("SMB ERROR: " + str(e))
+            subprocess.call(['rm', '-rf', str(tempFileCheck)])
+            return ("Fail")
+    else:
+        print("SMB ERROR: Inject ID not found for " + cI + " of type: " + str(type(cI)))
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 def checkDNS(ip, recordType): pass
 #dig google.com ANY +noall +answer
