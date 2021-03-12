@@ -16,6 +16,7 @@
 	smbSHRFile="CustomerData.txt"
 	sshUSR="ssh"
 	sshPWD="ssh"
+	smbPRT=22
 [Injects]
 #SMB
 	#1-->download teamname.txt from smbSHR
