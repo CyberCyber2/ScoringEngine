@@ -14,7 +14,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import urllib.request as urllib2
 import re
-mainUser = 'ahri' #the place to install ScoringEngine
+mainUser = 'suriya' #the place to install ScoringEngine
 today = _datetime.date.today()
 #~~~~~~~~~~~~~~~~Create Classes~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 class Service:
@@ -77,22 +77,22 @@ class Task:
 		else:
 			return False
 #~~~~~~~~~~~~~~~~~~~~~~THINGS TO SCORE~~~~~~~~~~~~~~~~~~~~~~~~~#
-users = [User(mainUser), User('ahri'), User('choggath'), User('jayce'), User('brehm') ] #If a user is deleted, you get a penalty
+users = [User(mainUser), User('suriya'), User('roscoe') ] #If a user is deleted, you get a penalty
 services = [Service('samba', 139)] #If a service is down, you get a penalty
 allTasks = [
-	Task('Returner','Samba bad share removed', 3, '[ "$(! grep erdie /etc/samba/smb.conf)" ]'),
-	Task('Returner','Samba password file removed', 3, '[! "$(ls -al /home/samba/smbshare | grep password)" ]'),
-	Task('Returner','Samba hidden script removed', 3, '[ ! "$(ls -al /home/samba/smbshare | grep sh)" ]'),
-	Task('Returner','Samba security settings', 3, '[ ! "$(grep obey /etc/samba/smb.conf | grep pam | grep no )" ]'),
-	Task('Returner','UFW bad rules', 2, '[ ! "$(grep 6969 /etc/ufw/user.rules)" ]'),
-	Task('Returner','Removed openssh', 2, '[ ! "$(dpkg --list | grep openssh)" ]'),
-	Task('Returner','Cowsay removed from netstat', 2, '[ ! "$(ls -al /bin | grep abee1c2800e133eeece1e738abf3a1d9f3a2d745)" ]'),
-	Task('Returner','Rc.local background command', 2, '[ ! "$(grep netcat /etc/rc.local)" ]'),
-	Task('Returner','Sudoers no password', 3, '[ ! "$(grep NOPASSWD /etc/sudoers)" ]'),
-	Task('Returner','octal 777 permissions on /', 3, '[ ! "$(ls -al / | grep rwxrwxrwx)" ]'),
-	Task('Returner','bad crontab for user choggath', 2, '[ ! "$(grep netcat /var/spool/cron/crontabs/choggath)" ]'),
-	Task('Returner','Aircrack malware removed', 1, '[ ! "$(dpkg --list | grep aircrack)" ]'),
-	Task('Returner','soup removed', 1, '[ ! "$(grep soup /etc/passwd)" ]')
+	Task('Returner','UFW enabled', 3, '[ "$(ufw status | grep active)" ]'),
+	Task('Returner','Bad admin removed', 1, '[ ! "$(grep slobadon_milosevic /etc/group | grep adm)" ]'),
+	Task('Returner','Open SSH security settings', 3, '[ ! "$(grep "Protocol 1" /etc/ssh/sshd_config)" ]'),
+	Task('Returner','perl backdoor', 2, '[ "$(ls /etc | grep backdoor" ]'),
+	Task('Returner','Apache2 bad website directory', 3, '[ ! "$(ls -al /var/www/html | grep sawyer)" ]'),
+	Task('Returner','Apache2 uses port 443', 3, '[ "$(grep 443 /etc/apache2/sites-available/000-default.conf)" ]'),
+	Task('Returner','Apache2 passwords in website removed', 3, '[ ! "$(grep Password /var/www/html/website/index.html)" ]'),
+	Task('Returner','Desktop malware nikto removed', 1, '[ ! "$(ls -al /home/roscoe/Desktop | grep nikto)" ]'),
+	Task('Returner','Hidden file shadow.png removed', 1, '[ ! "$(ls -al /home/monke | grep shadow)" ]'),
+	Task('Returner','doing.sh removed from /home/roscoe', 1, '[ ! "$(ls /home/roscoe | grep doing)" ]'),
+	Task('Returner','Hosts file fixed', 1, '[ ! "$(grep virus /etc/hosts)" ]'),
+	Task('Returner','Update settings', 1, '[  "$(grep "Update-Package-Lists" /etc/apt/apt.conf.d/10periodic | grep 1)" ]'),
+	Task('Returner','user can log into lightdm', 1, '[  ! "$(grep lightdm /etc/password | grep bash)" ]')
 ]
 groups = [] #groups that must exist, or else a penalty
 #~~~~~~~~~~~~~~~CREATE THE WEBSITE/CALCULATE POINTS~~~~~~~~~~~~~#
