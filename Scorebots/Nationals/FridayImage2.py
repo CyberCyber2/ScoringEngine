@@ -80,14 +80,14 @@ class Task:
 users = [User(mainUser), User('suriya'), User('roscoe') ] #If a user is deleted, you get a penalty
 services = [Service('samba', 139)] #If a service is down, you get a penalty
 allTasks = [
-	Task('Returner','UFW enabled', 3, '[ "$(ufw status | grep active)" ]'),
+	Task('Returner','UFW enabled', 3, '[ ! "$(ufw status | grep inactive)" ]'),
 	Task('Returner','Bad admin removed', 1, '[ ! "$(grep slobadon_milosevic /etc/group | grep adm)" ]'),
-	Task('Returner','Open SSH security settings', 3, '[ ! "$(grep "Protocol 1" /etc/ssh/sshd_config)" ]'),
+	Task('Returner','Open SSH security settings', 3, '[ ! "$(grep "Protocol 1" /etc/ssh/sshd_config | grep "\#"" )" ]'),
 	Task('Returner','perl backdoor', 2, '[ "$(ls /etc | grep backdoor" ]'),
 	Task('Returner','Apache2 bad website directory', 3, '[ ! "$(ls -al /var/www/html | grep sawyer)" ]'),
 	Task('Returner','Apache2 uses port 443', 3, '[ "$(grep 443 /etc/apache2/sites-available/000-default.conf)" ]'),
-	Task('Returner','Apache2 passwords in website removed', 3, '[ ! "$(grep Password /var/www/html/website/index.html)" ]'),
-	Task('Returner','Desktop malware nikto removed', 1, '[ ! "$(ls -al /home/roscoe/Desktop | grep nikto)" ]'),
+	Task('Returner','Apache2 passwords in website removed', 3, '[ ! "$(grep Password /var/www/html/index.html)" ]'),
+	Task('Returner','Desktop malware nikto removed', 1, '[ ! "$(ls -al /home/suriya/Desktop | grep nikto)" ]'),
 	Task('Returner','Hidden file shadow.png removed', 1, '[ ! "$(ls -al /home/monke | grep shadow)" ]'),
 	Task('Returner','doing.sh removed from /home/roscoe', 1, '[ ! "$(ls /home/roscoe | grep doing)" ]'),
 	Task('Returner','Hosts file fixed', 1, '[ ! "$(grep virus /etc/hosts)" ]'),
