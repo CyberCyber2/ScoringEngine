@@ -87,12 +87,12 @@ allTasks = [
 	Task('Returner','Apache2 bad website directory', 3, '[ ! "$(ls -al /var/www/html | grep sawyer)" ]'),
 	Task('Returner','Apache2 uses port 443', 3, '[ "$(grep 443 /etc/apache2/sites-available/000-default.conf)" ]'),
 	Task('Returner','Apache2 passwords in website removed', 3, '[ ! "$(grep Password /var/www/html/index.html)" ]'),
-	Task('Returner','Desktop malware nikto removed', 1, '[ ! "$(ls -al /home/suriya/Desktop | grep nikto)" ]'),
+	Task('Returner','Desktop malware nikto removed', 1, '[ ! "$(ls -al /home/suriya/Desktop | grep Nikto)" ]'),
 	Task('Returner','Hidden file shadow.png removed', 1, '[ ! "$(ls -al /home/monke | grep shadow)" ]'),
 	Task('Returner','doing.sh removed from /home/roscoe', 1, '[ ! "$(ls /home/roscoe | grep doing)" ]'),
 	Task('Returner','Hosts file fixed', 1, '[ ! "$(grep virus /etc/hosts)" ]'),
 	Task('Returner','Update settings', 1, '[  "$(grep "Update-Package-Lists" /etc/apt/apt.conf.d/10periodic | grep 1)" ]'),
-	Task('Returner','user can log into lightdm', 1, '[  ! "$(grep lightdm /etc/password | grep bash)" ]')
+	Task('Returner','user can log into lightdm', 1, '[  ! "$(grep lightdm /etc/passwd | grep bash)" ]')
 ]
 groups = [] #groups that must exist, or else a penalty
 #~~~~~~~~~~~~~~~CREATE THE WEBSITE/CALCULATE POINTS~~~~~~~~~~~~~#
