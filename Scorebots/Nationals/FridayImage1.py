@@ -26,7 +26,7 @@ class Service:
 	def getName(self):
 		return self.name
 	def isDown(self):	
-		if os.system('''netstat -tulpn | grep ''' + str(self.getPort()))  == 0:
+		if os.system('''ss -tulpn | grep ''' + str(self.getPort()))  == 0:
 			return False
 		return True
 class User:
@@ -258,6 +258,8 @@ while True:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DEBUG~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #Delete all processes with a name
 	#ps -ef | grep 'scorebot.py' | grep -v grep | awk '{print $2}' | xargs -r kill -9
+	#ps -ef | grep 'ScoringEngine.py' | grep -v grep | awk '{print $2}' | xargs -r kill -9
+	#rm -rf /etc/scorebot/.usr.dat
 #fix apt command locked
 #sudo killall apt apt-get
 #sudo rm /var/lib/apt/lists/lock
