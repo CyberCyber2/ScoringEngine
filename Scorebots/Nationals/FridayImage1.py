@@ -80,16 +80,16 @@ class Task:
 users = [User(mainUser), User('ahri'), User('choggath'), User('jayce'), User('brehm') ] #If a user is deleted, you get a penalty
 services = [Service('samba', 139)] #If a service is down, you get a penalty
 allTasks = [
-	Task('Returner','Samba bad share removed', 3, '[ "$(! grep erdie /etc/samba/smb.conf)" ]'),
+	Task('Returner','Samba bad share removed', 3, '[ ! "$( grep erdie /etc/samba/smb.conf)" ]'),
 	Task('Returner','Samba password file removed', 3, '[! "$(ls -al /home/samba/smbshare | grep password)" ]'),
 	Task('Returner','Samba hidden script removed', 3, '[ ! "$(ls -al /home/samba/smbshare | grep sh)" ]'),
 	Task('Returner','Samba security settings', 3, '[ ! "$(grep obey /etc/samba/smb.conf | grep pam | grep no )" ]'),
 	Task('Returner','UFW bad rules', 2, '[ ! "$(grep 6969 /etc/ufw/user.rules)" ]'),
 	Task('Returner','Removed openssh', 2, '[ ! "$(dpkg --list | grep openssh)" ]'),
-	Task('Returner','Cowsay removed from netstat', 2, '[ ! "$(ls -al /bin | grep abee1c2800e133eeece1e738abf3a1d9f3a2d745)" ]'),
+	Task('Returner','Cowsay removed from netstat', 2, '[ ! "$(sha1sum /bin/netstat | grep abee1c2800e133eeece1e738abf3a1d9f3a2d745)" ]'),
 	Task('Returner','Rc.local background command', 2, '[ ! "$(grep netcat /etc/rc.local)" ]'),
 	Task('Returner','Sudoers no password', 3, '[ ! "$(grep NOPASSWD /etc/sudoers)" ]'),
-	Task('Returner','octal 777 permissions on /', 3, '[ ! "$(ls -al / | grep rwxrwxrwx)" ]'),
+	Task('Returner','octal 777 permissions on /', 3, '[ ! "$(ls -al / | grep drwxrwxrwx)" ]'),
 	Task('Returner','bad crontab for user choggath', 2, '[ ! "$(grep netcat /var/spool/cron/crontabs/choggath)" ]'),
 	Task('Returner','Aircrack malware removed', 1, '[ ! "$(dpkg --list | grep aircrack)" ]'),
 	Task('Returner','soup removed', 1, '[ ! "$(grep soup /etc/passwd)" ]')
