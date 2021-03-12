@@ -14,7 +14,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import urllib.request as urllib2
 import re
-mainUser = 'cyber' #the place to install ScoringEngine
+mainUser = 'ahri' #the place to install ScoringEngine
 today = _datetime.date.today()
 #~~~~~~~~~~~~~~~~Create Classes~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 class Service:
@@ -77,10 +77,22 @@ class Task:
 		else:
 			return False
 #~~~~~~~~~~~~~~~~~~~~~~THINGS TO SCORE~~~~~~~~~~~~~~~~~~~~~~~~~#
-users = [User(mainUser), User('jongun5') ] #If a user is deleted, you get a penalty
-services = [Service('apache2', 443)] #If a service is down, you get a penalty
+users = [User(mainUser), User('ahri'), User('choggath'), User('jayce'), User('brehm') ] #If a user is deleted, you get a penalty
+services = [Service('samba', 139)] #If a service is down, you get a penalty
 allTasks = [
-	Task('Returner','Returner Forensics 1', 5, '[ "$(grep mod_perl /home/'+ mainUser + '/Desktop/Forensics/Forensics1)" ]')
+	Task('Returner','Samba bad share removed', 3, '[ "$(! grep erdie /etc/samba/smb.conf)" ]'),
+	Task('Returner','Samba password file removed', 3, '[! "$(ls -al /home/samba/smbshare | grep password)" ]'),
+	Task('Returner','Samba hidden script removed', 3, '[ ! "$(ls -al /home/samba/smbshare | grep sh)" ]'),
+	Task('Returner','Samba security settings', 3, '[ ! "$(grep obey /etc/samba/smb.conf | grep pam | grep no )" ]'),
+	Task('Returner','UFW bad rules', 2, '[ ! "$(grep 6969 /etc/ufw/user.rules)" ]'),
+	Task('Returner','Removed openssh', 2, '[ ! "$(dpkg --list | grep openssh)" ]'),
+	Task('Returner','Cowsay removed from netstat', 2, '[ ! "$(ls -al /bin | grep abee1c2800e133eeece1e738abf3a1d9f3a2d745)" ]'),
+	Task('Returner','Rc.local background command', 2, '[ ! "$(grep netcat /etc/rc.local)" ]'),
+	Task('Returner','Sudoers no password', 3, '[ ! "$(grep NOPASSWD /etc/sudoers)" ]'),
+	Task('Returner','octal 777 permissions on /', 3, '[ ! "$(ls -al / | grep rwxrwxrwx)" ]'),
+	Task('Returner','bad crontab for user choggath', 2, '[ ! "$(grep netcat /var/spool/cron/crontabs/choggath)" ]'),
+	Task('Returner','Aircrack malware removed', 1, '[ ! "$(dpkg --list | grep aircrack)" ]'),
+	Task('Returner','soup removed', 1, '[ ! "$(grep soup /etc/passwd)" ]')
 ]
 groups = [] #groups that must exist, or else a penalty
 #~~~~~~~~~~~~~~~CREATE THE WEBSITE/CALCULATE POINTS~~~~~~~~~~~~~#
@@ -102,7 +114,7 @@ def update():
 				returnerTotal = returnerTotal + 1
 			if t.getLevel() == 'Advanced':
 				advancedTotal = advancedTotal + 1
-	h = open('/home/cyber/Desktop/ScoreReport.html','w')
+	h = open('/home/'+ mainUser +'/Desktop/ScoreReport.html','w')
 	h.write('<!DOCTYPE html> <html> <head> <meta name="viewport" content="width=device-width, initial-scale=1"> <style> * { box-sizing: border-box; } .column { float: left; padding: 10px; height: 1500px; } .left, .right { width: 25%; } .middle { width: 50%; } .row:after { content: ""; display: table; clear: both; }</style> </head> <body><div class="row"> <div class="column left" style="background-color:#0d60bf;"></div> <div class="row"> <div class="column middle" style="background-color:#fff;"><h1 style="text-align: center;"><span style="font-family: arial, helvetica, sans-serif;">Score Report</span></h1><h2 style="text-align: center;"><br /><span style="font-family: arial, helvetica, sans-serif;">' + percent + ' completed</span></h2><p> </p>')
 	h.write('<p><span style="font-family: arial, helvetica, sans-serif; text-align: center;"><strong>' + "Report Generated at: " + str(today) + '. </strong></span></p>')
 	h.write('<p><span style=color:red;"font-family: arial, helvetica, sans-serif;"><strong>' + str(penalties) + ' Points in Scoring Penalties</strong></span></p>')
@@ -252,4 +264,3 @@ while True:
 #sudo rm /var/cache/apt/archives/lock
 #sudo rm /var/lib/dpkg/lock*
 #sudo dpkg --configure -a
-
