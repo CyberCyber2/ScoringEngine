@@ -2,25 +2,29 @@
 	checkInterval=5
 	ftpFile=FTPCHECK.txt
 	ftpFileHash=da39a3ee5e6b4b0d3255bfef95601890afd80709
-	ftpUSR=client
-	ftpPWD=client
+	ftpUSR=anonymous
+	ftpPWD=anonymous
 	ftpPath=/home/client/
 	serverFTPDir=/home/server/Desktop
-	apacheCheck=Check2132
+	apacheCheck=CheckString12
 	apacheWebsite=index.html
 	dataDirectory=/home/server/Desktop/data/
 	mySQL_Query="SELECT name, address FROM customers"
-	smbUSR=anon
-	smbPWD=anon
+	smbUSR=anonymous
+	smbPWD=anonymous
 	smbSHR=Public
-
+	smbSHRFile="CustomerData.txt"
 [Injects]
-	#FTP 
-	#SMB
+#SMB
+	#1-->download teamname.txt from smbSHR
+	#2-->download smbSHRFile from the sambashare
 	smbCurrInject=1 #Download (teamname.txt) from smbSHR
-	#APACHE
+#SSH
+	#1-->check for connectivity
+	#2-->
+	
+	sshCurrInject=1
 
 [Desc]
-	Inject1="Linux - Configure VSFTPD so that the file stored at (url) is placed in the default FTP share"
+	Inject1="Linux - Add the file "CustomerData.txt" to the sambashare "sambashare"
 	Inject2="Linux2 - Change the default SSH port to 2222"
-	Inject3="Linux3 - Create the SAMBA share called Public and allow guests to access the share"
