@@ -14,6 +14,8 @@
 	smbPWD=anonymous
 	smbSHR=Public
 	smbSHRFile="CustomerData.txt"
+	sshUSR="ssh"
+	sshPWD="ssh"
 [Injects]
 #SMB
 	#1-->download teamname.txt from smbSHR
