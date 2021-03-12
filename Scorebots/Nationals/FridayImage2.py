@@ -78,7 +78,7 @@ class Task:
 			return False
 #~~~~~~~~~~~~~~~~~~~~~~THINGS TO SCORE~~~~~~~~~~~~~~~~~~~~~~~~~#
 users = [User(mainUser), User('suriya'), User('roscoe') ] #If a user is deleted, you get a penalty
-services = [Service('samba', 139)] #If a service is down, you get a penalty
+services = [] #If a service is down, you get a penalty
 allTasks = [
 	Task('Returner','UFW enabled', 3, '[ ! "$(ufw status | grep inactive)" ]'),
 	Task('Returner','Bad admin removed', 1, '[ ! "$(grep slobadon_milosevic /etc/group | grep adm)" ]'),
@@ -258,6 +258,8 @@ while True:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DEBUG~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #Delete all processes with a name
 	#ps -ef | grep 'scorebot.py' | grep -v grep | awk '{print $2}' | xargs -r kill -9
+	#ps -ef | grep 'ScoringEngine.py' | grep -v grep | awk '{print $2}' | xargs -r kill -9
+	#rm -rf /etc/scorebot/.usr.dat
 #fix apt command locked
 #sudo killall apt apt-get
 #sudo rm /var/lib/apt/lists/lock
