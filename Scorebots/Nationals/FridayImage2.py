@@ -26,7 +26,7 @@ class Service:
 	def getName(self):
 		return self.name
 	def isDown(self):	
-		if os.system('''netstat -tulpn | grep ''' + str(self.getPort()))  == 0:
+		if os.system('''ss -tulpn | grep ''' + str(self.getPort()))  == 0:
 			return False
 		return True
 class User:
