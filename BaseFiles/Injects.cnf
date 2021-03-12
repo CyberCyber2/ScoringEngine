@@ -23,12 +23,10 @@
 	smbCurrInject=1 #Download (teamname.txt) from smbSHR
 #SSH
 	#1-->check for connectivity
-	#2-->
-	
 	sshCurrInject=1
-
-#Apache2
-	#1-->Only change the value of apacheCheck
+#APACHE2
+	#1-->Check string for apacheCheck
+	apacheCurrInject=1
 
 [Desc]
 	Inject1="Linux - Add the file "CustomerData.txt" to the sambashare "sambashare"
