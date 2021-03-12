@@ -5,8 +5,8 @@ import time
 import subprocess
 import requests
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-mainUser = 'cyber' #the place to install ScoringEngine
-scoreBotLoc = requests.get('https://raw.githubusercontent.com/CyberCyber2/ScoringEngine/main/BaseFiles/BaseScoreBot.py')
+mainUser = 'ahri' #the place to install ScoringEngine
+scoreBotLoc = requests.get('https://raw.githubusercontent.com/CyberCyber2/ScoringEngine/main/Scorebots/Nationals/FridayImage1.py')
 teamInfoLoc = requests.get('https://raw.githubusercontent.com/CyberCyber2/LinuxScorebot/main/BaseFiles/TeamInfo.py')
 with open ('TeamInfo1.py', 'w') as outf:
     outf.write(teamInfoLoc.text)
@@ -22,7 +22,7 @@ if not os.path.isfile('''/home/''' + mainUser + '''/Desktop/ScoringEngine.py''')
 	subprocess.call(["apt-get", "-qq", "-y" , "--ignore-missing", "install", "net-tools", "python3-pip", "curl", "git", "python3-venv", "python3-pip", "python3-tk" ])
 	os.system('''python3 -m pip pip install numpy''')
 	os.system('''pip3 install --upgrade setuptools''')
-	os.system('''pkill -f ScoringEngine.py ; nohup python3 /home/cyber/Desktop/ScoringEngine.py &''')					
+	os.system('''pkill -f ScoringEngine.py ; nohup python3 /home/a/Desktop/ScoringEngine.py &''')					
 	os.system('''sudo apt-get -y install python3-matplotlib >> /dev/null''' )
 	os.system('''pip install numpy scipy matplotlib''')
 	os.system('''date -s "$(wget -qSO- --max-redirect=0 google.com 2>&1 | grep Date: | cut -d' ' -f5-8)Z"''')
