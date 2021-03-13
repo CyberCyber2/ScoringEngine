@@ -6,7 +6,7 @@ import subprocess
 import requests
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 mainUser = 'ahri' #the place to install ScoringEngine
-scoreBotLoc = requests.get('https://raw.githubusercontent.com/CyberCyber2/ScoringEngine/main/Scorebots/Nationals/FridayImage1.py')
+scoreBotLoc = requests.get('https://raw.githubusercontent.com/CyberCyber2/ScoringEngine/main/Scorebots/Nationals/DebianScorebot.py')
 teamInfoLoc = requests.get('https://raw.githubusercontent.com/CyberCyber2/LinuxScorebot/main/BaseFiles/TeamInfo.py')
 with open ('TeamInfo1.py', 'w') as outf:
     outf.write(teamInfoLoc.text)
