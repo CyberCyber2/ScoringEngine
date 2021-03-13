@@ -77,8 +77,8 @@ class Task:
 		else:
 			return False
 #~~~~~~~~~~~~~~~~~~~~~~THINGS TO SCORE~~~~~~~~~~~~~~~~~~~~~~~~~#
-users = [User(mainUser), User('ahri'), User('choggath'), User('jayce'), User('brehm') ] #If a user is deleted, you get a penalty
-services = [Service('samba', 139)] #If a service is down, you get a penalty
+users = [User(mainUser)] #If a user is deleted, you get a penalty
+services = [] #If a service is down, you get a penalty
 allTasks = [
 	Task('Finals','Unneeded ports closed', 5, '[ "$()" ]'),
 	Task('Finals','Bad umask for BASHRC fixed', 5, '[ "$(grep umask ~/.bashrc | grep 022)" ]'),
