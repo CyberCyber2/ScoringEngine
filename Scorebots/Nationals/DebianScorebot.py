@@ -14,7 +14,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import urllib.request as urllib2
 import re
-mainUser = 'cyber' #the place to install ScoringEngine
+mainUser = 'ahri' #the place to install ScoringEngine
 today = _datetime.date.today()
 #~~~~~~~~~~~~~~~~Create Classes~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 class Service:
@@ -87,7 +87,7 @@ allTasks = [
 	Task('Finals','VSFTPD blocks unauthorized users', 5, '[ "$()" ]'),
 	Task('Finals','VSFTPD Bruteforce fixed via IPTABLES rules', 5, '[ "$()" ]'),
 	Task('Finals','Hidden VSFTPD file removed with passwords', 5, '[ "$()" ]'),
-	Task('Finals','VSFTPD listening on correct port', 5, '[ "$()" ]')
+	Task('Finals','VSFTPD listening on correct port', 5, '[ "$()" ]'),
 	Task('Finals','IPTABLES enabled', 5, '[ "$(grep blacklist /etc/modprobe.d/ip_tables.conf)" ]'),
 	Task('Finals','ettercap removed', 3, '[ ! "$(dpkg --list | grep ettercap)" ]'),
 	Task('Finals','NX Bit set',1, '[ "$(dmesg | grep NX | grep active)" ]'),
@@ -99,12 +99,12 @@ allTasks = [
 	Task('Finals','iTLB pages forced to be under 4K', 1, '[ "$(grep nx_huge_pages /etc/default/grub)" ]'),
 	Task('Finals','VSFTPD password in bash history', 2, '[ "$()" ]'),
 	Task('Finals','Bad shadow hashing algorithm????', 2, '[ "$()" ]'),
-	Task('Finals','4.5 Million GB zip bomb', 3, '[ "$(grep homeworkFolder.zip /home/cyber/Desktop)" ]')
+	Task('Finals','4.5 Million GB zip bomb', 3, '[ "$(grep homeworkFolder.zip /home/cyber/Desktop)" ]'),
 	Task('Finals','BASHRC sudo lockout script', 3, '[ ! "$(grep su /home/cyber/.bashrc)" ]'),
 	Task('Finals','Samba used old executable version', 2, '[ "$()" ]'),
 	Task('Finals','Protected Hardlinks', 1, '[ "$(grep 1 /etc/sysctl.d/protect-links.conf)" ]'),
-	Task('Finals','Immutable Desktop fixed', 5, '[ ! "$(lsattr /home/cyber/Desktop | grep "-e-")" ]')
-	Task('Finals','train touch script removed', 2, '[ ! "$(ls -al /usr/bin | grep touch | grep 26568)" ]')
+	Task('Finals','Immutable Desktop fixed', 5, '[ ! "$(lsattr /home/cyber/Desktop | grep "-e-")" ]'),
+	Task('Finals','train touch script removed', 2, '[ ! "$(ls -al /usr/bin | grep touch | grep 26568)" ]'),
 	#~~~Backdoors~~~#
 	Task('Finals','FTP 2.3.4 updated)', 5, '[ ! "$(vsftpd -v | grep 2.3.4)" ]'),
 	Task('Finals','SystemD Sysutils malicious systemd service file fixed', 2, '[ ! "$(ls -l /etc/systemd/system | grep sysutils)" ]'),
