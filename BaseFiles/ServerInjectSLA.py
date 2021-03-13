@@ -1,3 +1,4 @@
+  
 import matplotlib.pyplot as plt 
 import subprocess, platform, os
 import hashlib
@@ -121,8 +122,7 @@ class CaseConfigParser(SafeConfigParser):
      def optionxform(self, optionstr):
          return optionstr
 allTeams = [
-    Team('Suriya', '192.168.1.244'),
-    Team('Ahri', '192.168.1.245')
+    Team('Crystal', '10.4.2.10')
 ]
 def similar(a, b): #Just incase the hash has an extra space, don't feel like removing space
     return SequenceMatcher(None, a, b).ratio()
@@ -172,6 +172,7 @@ def checkSMB(ip, teamName, cI):
         tempFileCheck = str(teamName) + ".txt" #tell them to add this file on client
         try:
             subprocess.call(['smbget', "smb://" + str(ip) + "/" + str(smbSHR) + "/" + str(tempFileCheck), "-U" , smbUSR + '%' + smbPWD])
+            subprocess.call(['smbget', "smb:\\\\" + str(ip) + "\\" + str(smbSHR) + "\\" + str(tempFileCheck), "-U" , smbUSR + '%' + smbPWD]) #Windows
             if not (os.path.isfile(str(tempFileCheck))):
                 print("Error: could not get SMB file: " + str(tempFileCheck) + " from " + str(ip))
                 return ("Fail")
