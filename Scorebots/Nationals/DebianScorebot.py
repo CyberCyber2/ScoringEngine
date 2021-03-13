@@ -91,7 +91,7 @@ allTasks = [
 	Task('Finals','IPTABLES enabled', 5, '[ "$(grep blacklist /etc/modprobe.d/ip_tables.conf)" ]'),
 	Task('Finals','ettercap removed', 3, '[ ! "$(dpkg --list | grep ettercap)" ]'),
 	Task('Finals','NX Bit set',1, '[ "$(dmesg | grep NX | grep active)" ]'),
-	Task('Finals','Bad banner removed', 52 '[ ! "$(grep HACKED /etc/motd)" ]'),
+	Task('Finals','NX Bit set',2, '[ ! "$(grep HACKED /etc/motde)" ]'),
 	Task('Finals','Login.defs login timeout', 2, '[ "$(grep LOGIN_TIMEOUT /etc/login.defs | grep 90)" ]'),
 	Task('Finals','Login.defs login retries corrected ', 2, '[ ! "$(grep 555 /etc/login.defs)" ]'),
 	Task('Finals','System uses better ptrace options', 1, '[ "$(grep 0 /proc/sys/kernel/yama/ptrace_scope)" ]'),
