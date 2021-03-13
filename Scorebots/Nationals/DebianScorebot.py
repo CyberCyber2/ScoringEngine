@@ -77,8 +77,8 @@ class Task:
 		else:
 			return False
 #~~~~~~~~~~~~~~~~~~~~~~THINGS TO SCORE~~~~~~~~~~~~~~~~~~~~~~~~~#
-users = [User(mainUser), User('ahri'), User('choggath'), User('jayce'), User('brehm') ] #If a user is deleted, you get a penalty
-services = [Service('samba', 139)] #If a service is down, you get a penalty
+users = [User(mainUser) ] #If a user is deleted, you get a penalty
+services = [] #If a service is down, you get a penalty
 allTasks = [
 	Task('Finals','Removed bad apt-hold setting for iptables', 5, '[ ! "$(apt-mark showhold iptables)" ]'),
 	Task('Finals','Hidden Sudoers config removed', 5, '[ "$()" ]'),
