@@ -14,7 +14,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import urllib.request as urllib2
 import re
-mainUser = 'ahri' #the place to install ScoringEngine
+mainUser = 'cyber' #the place to install ScoringEngine
 today = _datetime.date.today()
 #~~~~~~~~~~~~~~~~Create Classes~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 class Service:
