@@ -185,7 +185,7 @@ def checkSMB(ip, teamName, cI):
     else:
         print("SMB ERROR: Inject ID not found for " + cI + " of type: " + str(type(cI)))
 
-     if (int(cI) == 2):
+    if (int(cI) == 2):
         tempFileCheck = str(smbSHRFile) #tell them to add this file on client
         try:
             subprocess.call(['smbget', "smb://" + str(ip) + "/" + str(smbSHR) + "/" + str(tempFileCheck), "-U" , smbUSR + '%' + smbPWD])
