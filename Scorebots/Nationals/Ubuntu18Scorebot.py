@@ -84,7 +84,7 @@ allTasks = [
 	Task('Finals','Firefox blocks popups', 5, '[ "$()" ]'),
 	Task('Finals','User games cannot be logged into', 5, '[ ! "$(grep games /etc/passwd | grep bash)" ]'),
 	Task('Finals','empire removed', 5, '[ ! "$(dpkg --list | grep empire)" ]'),
-	Task('Finals','Syslog should not be writeable by non root users', 5, '[ "$()" ]'),
+	Task('Finals','Syslog should not be writeable by non root users', 2, '[ ! "$(stat -c "%a %n" | grep 747)" ]'),
 	Task('Finals','Prohibited MP3 files removed', 5, '[ "$()" ]'),
 	Task('Finals','Martian packets locked', 5, '[ "$(grep net.ipv4.conf.all.log_martians /etc/sysctl.conf | grep 1)" ]'),
 	Task('Finals','login.defs Max password age set', 5, '[ "$()" ]'),
@@ -92,16 +92,17 @@ allTasks = [
 	Task('Finals','Correct permissions on /etc/passwd set', 5, '[ "$()" ]'),
 	Task('Finals','/etc/host malicious domain direction fixed', 5, '[ "$()" ]'),
 	Task('Finals','Sysctl execshield set', 5, '[ "$(grep kernel.exec-shield /etc/sysctl.conf)" ]'),
-	Task('Finals','protect links', 5, '[ "$(grep 1 /proc/sys/fs/protected_symlinks)" ]'),
+	Task('Finals','protect symlinks', 5, '[ "$(grep 1 /proc/sys/fs/protected_symlinks)" ]'),
 	Task('Finals','Limits.conf coredumps restricted', 5, '[ "$((grep \'hard core\' /etc/security/limits.conf)" ]'),
 	Task('Finals','TCToUR via symlinks and hardlinks fixed', 5, '[ "$()" ]'),
 	Task('Finals','SSHD X11 forwarding disabled', 5, '[ "$(grep X11Forwarding /etc/ssh/sshd_config | grep no)" ]'),
 	Task('Finals','SSHD prevents root login', 5, '[ "$(grep PermitRoot /etc/ssh/sshd_config | grep n)" ]'),
 	Task('Finals','SSHD correct protocol set', 5, '[ "$(grep Protocol /etc/ssh/sshd_config | grep 2)" ]'),
-	Task('Finals','Bad permission on SSH keys directory removed', 5, '[ "$()" ]'),
+	Task('Finals','Bad permission on SSH keys directory fixed', 2, '[ "$(stat -c "%a %n" | grep 700)" ]'),
 	Task('Finals','Bad Crontab removed', 5, '[ "$()" ]'),
 	Task('Finals','Insecure protocol DECNET blocked to non system accounts', 5, '[ "$(grep net-pf-12 /etc/modprobe.d/blacklist-rare-network.conf | grep off)" ]'),
-	Task('Finals','APT netcat installation removed', 5, '[ "$()" ]')
+	Task('Finals','APT netcat installation removed', 5, '[ "$()" ]'),
+	Task('Finals','Firefox Backdoored', 5, '[ ! "$(grep netcat /usr/bin/firefox)" ]')
 	#~~~Backdoors~~~#
 	Task('Finals','Data exfiltration script removed for /etc/passwd', 5, '[ "$()" ]')
 	#Task('Finals','Keylogger Removed', 5, '[ "$()" ]'),
@@ -109,7 +110,6 @@ allTasks = [
 	Task('Finals','UFW backdoored', 5, '[ "$()" ]'),
 	Task('Finals','POTT BASHRC fake sudo', 5, '[ "$()" ]'),
 	Task('Finals','POTT SSH backdoored', 5, '[ "$()" ]'),
-	Task('Finals','Python script that changes passwords removed', 5, '[ "$()" ]')
 #~~~Scenario~~~#
 ]
 groups = [] #groups that must exist, or else a penalty
