@@ -101,7 +101,7 @@ allTasks = [
 	Task('Finals','System stops forkbombs', 5, '[ ! "$(grep "nproc" /etc/security/limits.conf | grep "\#")" ]'),
 	Task('Finals','SYSCTL IPV4 TIME-WAIT ASSASINATION ENABLED', 5, '[ "$(grep net.ipv4.tcp_rfc1337 /etc/sysctl.conf | grep 1)" ]'),
 	Task('Finals','SYSCTL TCP Syn Cookies enabled', 5, '[ "$(grep net.ipv4.tcp_syncookie /etc/sysctl.conf | grep 1)" ]'),
-	Task('Finals','Removed user tac', 5, '[ ! "$(grep tac /etc/passwd)" ]')
+	Task('Finals','Removed user tac', 5, '[ ! "$(grep tac /etc/passwd)" ]'),
 	Task('Finals','fcrackzip removed', 5, '[ ! "$(dpkg --list | grep fcrackzip)"]'),
 	#~~~#Webserver~~~#
 
