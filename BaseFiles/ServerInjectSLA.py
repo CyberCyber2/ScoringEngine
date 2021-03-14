@@ -25,7 +25,7 @@ apacheCheck = ""
 apacheWebsite = ""
 dataDirectory = ""
 mySQL_Query = ""
-mySQL_PWD 
+mySQL_PWD = ""
 smbUSR = ""
 smbPWD = ""
 smbSHR = ""
@@ -37,6 +37,12 @@ sshPRT = ""
 injectSSHCurr = ""
 injectSMBCurr = ""
 injectApacheCurr = ""
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+class CaseConfigParser(SafeConfigParser):
+    def optionxform(self, optionstr):
+        return optionstr
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 class Team:
     def __init__(self, name, address):
@@ -51,6 +57,15 @@ class Team:
         return self.name
     def getAddress(self):
         return self.address
+
+    def isScored(self, service):
+        config = CaseConfigParser(os.environ)
+        config.read('Injects.cnf')
+        if (config.get('Teams', self.name + "Score_" + service) == "True"):
+            return (True)
+        else:
+            return (False)
+
     def countUptime(self, service, currInject): 
 
         if service == "internet":
@@ -118,11 +133,9 @@ class Team:
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-class CaseConfigParser(SafeConfigParser):
-     def optionxform(self, optionstr):
-         return optionstr
 allTeams = [
-    Team('Crystal', '10.4.2.10')
+    Team('Vallejo', '192.168.1.249'),
+    Team('SantaCruz', '127.0.0.1')
 ]
 def similar(a, b): #Just incase the hash has an extra space, don't feel like removing space
     return SequenceMatcher(None, a, b).ratio()
@@ -305,7 +318,6 @@ def grapherFunction():
     #~~~~~~~~~~~~~~~~~~~~~~#
         config = CaseConfigParser(os.environ)
         config.read('Injects.cnf')
-
         injectSMBCurr = config.get('Injects', 'smbCurrInject')
         injectApacheCurr = config.get('Injects', 'apacheCurrInject')
         injectSSHCurr = config.get('Injects', 'sshCurrInject')
@@ -334,11 +346,29 @@ def grapherFunction():
         table_data=[[" "], ["Internet"], ["Apache2"], ["SMB"], ["SSH"]] # ["Internet"], ["Apache2"], ["SMB"], ["SSH"]
         for t in allTeams:
             table_data[0].append(t.getName())
-            table_data[1].append(str(checkInternet (str(t.getAddress()))) + ":" + str(t.countUptime("internet", 1)))
+            #
+            if (t.isScored("internet")):
+                table_data[1].append(str(checkInternet (str(t.getAddress()))) + ":" + str(t.countUptime("internet", 1)))
+            if (not t.isScored("internet")):
+                table_data[1].append("N/A")
+            #
+            if (t.isScored("apache")):
+                table_data[2].append(str(check_apache2(t.getAddress(), injectApacheCurr)) + ":" + str(t.countUptime("apache" , injectApacheCurr)))
+            if (not t.isScored("apache")):
+                table_data[2].append("N/A")
+            #
+            if (t.isScored("samba")):
+                table_data[3].append(str(checkSMB(t.getAddress(), t.getName(), injectSMBCurr)) + ":" + str(t.countUptime("samba", injectSMBCurr)))
+            if (not t.isScored("samba")):
+                table_data[3].append("N/A")
+            #
+            if (t.isScored("ssh")):
+                table_data[4].append(str(checkSSH(t.getAddress(), sshPRT, sshUSR, sshPWD, injectSSHCurr)) + ":" + str(t.countUptime("ssh", injectSSHCurr)))
+            if (not t.isScored("ssh")):
+                table_data[4].append("N/A")
+            #
+
             #table_data[1].append(str(checkFTP(str(t.getAddress()),"21", ftpFile, ftpFileHash)) + ":" + str(t.countUptime("ftp" , injectSMBCurr)))
-            table_data[2].append(str(check_apache2(t.getAddress(), injectApacheCurr)) + ":" + str(t.countUptime("apache" , injectApacheCurr)))
-            table_data[3].append(str(checkSMB(t.getAddress(), t.getName(), injectSMBCurr)) + ":" + str(t.countUptime("samba", injectSMBCurr)))
-            table_data[4].append(str(checkSSH(t.getAddress(), sshPRT, sshUSR, sshPWD, injectSSHCurr)) + ":" + str(t.countUptime("ssh", injectSSHCurr)))
         table = ax.table(cellText=table_data, loc='center')
         table.set_fontsize(14)
         table.scale(1,4)
