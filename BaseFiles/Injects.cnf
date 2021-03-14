@@ -18,6 +18,7 @@
 	sshUSR=test
 	sshPWD=test
 	smbPRT=22
+	mysqlPWD=HotPockets1
 [Injects]
 #SMB
 	#1-->download teamname.txt from smbSHR
