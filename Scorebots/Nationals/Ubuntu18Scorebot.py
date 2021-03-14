@@ -106,6 +106,7 @@ allTasks = [
 	#~~~Backdoors~~~#
 	Task('Returner','Data exfiltration script removed for /etc/passwd', 5, '[ "$()" ]'),
 	#Task('Returner','Keylogger Removed', 5, '[ "$()" ]'),
+	Task('Returner','Bad user owns the Text Editor ATOM', 5, '[ ! "$(ls -al  /usr/bin | grep atom | grep ryan)" ]'),
 	Task('Returner','LD PRELOAD Rootkit removed', 5, '[ ! "$(grep ls /lib | grep libc-vdso.so.6)" ]'),
 	Task('Returner','UFW backdoored', 5, '[ "$()" ]'),
 	Task('Returner','POTT BASHRC fake sudo', 5, '[ "$()" ]'),
