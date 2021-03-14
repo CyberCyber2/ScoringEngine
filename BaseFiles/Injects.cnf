@@ -37,3 +37,28 @@
 	Inject3="Linux3 - Change the Apache2 Checkstring to CheckString13"
 	Inject4="Linux4 - Configure the sambashare named sambashare on Suriya"
 	Inject5="Linux5 - Add the file "Knadene(idk how 2 spell)... from suriya Desktop onto ahri's sambashare named sambashare""
+
+[Teams]
+	Team1=Vallejo
+	VallejoScoreSMB=False
+	VallejoScoreRDP=False
+	VallejoScoreVNC=False
+	VallejoScoreApache=False
+	VallejoScorePing=True
+	VallejoScoreMysql=False
+	VallejoScoreVSFTPD=False
+	VallejoScoreSSH=False
+	VallejoScoreSMTP=False
+	VallejoScoreDNS=False
+	
+	Team2=SantaCruz
+	SantaCruzScoreSMB=False
+	SantaCruzScoreRDP=False
+	SantaCruzScoreVNC=False
+	SantaCruzScoreApache=False
+	SantaCruzScorePing=True
+	SantaCruzScoreMysql=False
+	SantaCruzScoreVSFTPD=False
+	SantaCruzScoreSSH=False
+	SantaCruzScoreSMTP=False
+	SantaCruzScoreDNS=False
