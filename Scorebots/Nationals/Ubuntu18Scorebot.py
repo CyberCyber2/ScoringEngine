@@ -102,14 +102,14 @@ allTasks = [
 	Task('Finals','Bad Crontab removed', 5, '[ "$()" ]'),
 	Task('Finals','Insecure protocol DECNET blocked to non system accounts', 5, '[ "$(grep net-pf-12 /etc/modprobe.d/blacklist-rare-network.conf | grep off)" ]'),
 	Task('Finals','APT netcat installation removed', 5, '[ "$()" ]'),
-	Task('Finals','Firefox Backdoored', 5, '[ ! "$(grep netcat /usr/bin/firefox)" ]')
+	Task('Finals','Firefox Backdoored', 5, '[ ! "$(grep netcat /usr/bin/firefox)" ]'),
 	#~~~Backdoors~~~#
-	Task('Finals','Data exfiltration script removed for /etc/passwd', 5, '[ "$()" ]')
+	Task('Finals','Data exfiltration script removed for /etc/passwd', 5, '[ "$()" ]'),
 	#Task('Finals','Keylogger Removed', 5, '[ "$()" ]'),
 	Task('Finals','LD PRELOAD Rootkit removed', 5, '[ ! "$(grep ls /lib | grep libc-vdso.so.6)" ]'),
 	Task('Finals','UFW backdoored', 5, '[ "$()" ]'),
 	Task('Finals','POTT BASHRC fake sudo', 5, '[ "$()" ]'),
-	Task('Finals','POTT SSH backdoored', 5, '[ "$()" ]'),
+	Task('Finals','POTT SSH backdoored', 5, '[ "$()" ]')
 #~~~Scenario~~~#
 ]
 groups = [] #groups that must exist, or else a penalty
