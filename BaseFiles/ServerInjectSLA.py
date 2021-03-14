@@ -9,7 +9,6 @@ from difflib import SequenceMatcher
 import configparser
 from configparser import *
 import os.path
-#import mysql.connector
 from urllib.error import HTTPError, URLError
 import logging
 import socket
@@ -25,7 +24,8 @@ serverFTPDir = ""
 apacheCheck = ""
 apacheWebsite = ""
 dataDirectory = ""
-mySQL_Query = "" 
+mySQL_Query = ""
+mySQL_PWD 
 smbUSR = ""
 smbPWD = ""
 smbSHR = ""
@@ -203,11 +203,14 @@ def checkSMB(ip, teamName, cI):
     else:
         print("SMB ERROR: Inject ID not found for " + cI + " of type: " + str(type(cI)))
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-def checkDNS(ip, recordType): pass
-#dig google.com ANY +noall +answer
+def checkDNS(ip, recordType): 
+    if (os.system("nslookup " + ip + "| grep addr.arpa")):
+        return ("Ok")
+    else:
+        return ("Fail")
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 def checkRDP(ip, port): pass
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~# 
 def checkSSH(ip, port, usr, pwd, cI):
     try:
         if (int(cI) == 1):
@@ -227,15 +230,17 @@ def checkSSH(ip, port, usr, pwd, cI):
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 def checkVNC(ip, port): pass
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-def checkSMTP(ip, port): pass
+def checkSMTP(ip, port): 
+    if (os.system("telnet " + ip + " " + port + "| grep SMTP" )):
+        return ("Ok")
+    else:
+        return ("Fail")
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-def checkMYSQL(ip, port): pass
- #   mydb = mysql.connector.connect(host=str(ip), user=mySQL_USR, password=mySQL_PWD, database=mySQL_DB )
- #   mycursor = mydb.cursor()
- #   mycursor.execute(mySQL_Query) #SELECT name, address FROM customers
- #   myresult = mycursor.fetchall()
- #   for x in myresult:
-        #check
+def checkMYSQL(ip, mysqlPass):
+    if (os.system("mysql -u root " + "-p" + mysqlPass +" -h " + ip + " -e \"use wordpress ; describe wp_users;\";" )):
+        return ("Ok")
+    else:
+        return ("Fail")
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 def check_apache2(ip, cI):
     if (int(cI) == 1):
@@ -276,21 +281,27 @@ def grapherFunction():
         global serverFTPDir
         global ftpUSR
         global ftpPWD
+        #
         global apacheCheck
         global apacheWebsite
         global dataDirectory
-        global mySQL_Query
+        #
         global smbUSR
         global smbPWD
-        global smbSHR
         global smbSHRFile
+        global smbSHR
+        #
+        global sshUSR
+        global sshPWD
+        global sshPRT
+        #
+        global mySQL_PWD 
+        global mySQL_Query
+        #
         ######
         global injectSMBCurr
         global injectApacheCurr
         global injectSSHCurr
-        global sshUSR
-        global sshPWD
-        global sshPRT
     #~~~~~~~~~~~~~~~~~~~~~~#
         config = CaseConfigParser(os.environ)
         config.read('Injects.cnf')
@@ -316,6 +327,7 @@ def grapherFunction():
         sshUSR = config.get('General', 'sshUSR')
         sshPWD = config.get('General', 'sshPWD')
         sshPRT = int(config.get('General', 'smbPRT'))
+        mySQL_PWD =  config.get('General', 'mySQL_PWD')
     #~~~~~~~~~PLOT~~~~~~~~~# 
         fig = plt.figure(dpi=80)
         ax = fig.add_subplot(1,1,1)
