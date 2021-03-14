@@ -18,7 +18,7 @@
 	sshUSR=test
 	sshPWD=test
 	smbPRT=22
-	mysqlPWD=HotPockets1
+	mySQL_PWD=HotPockets1
 [Injects]
 #SMB
 	#1-->download teamname.txt from smbSHR
@@ -40,25 +40,26 @@
 
 [Teams]
 	Team1=Vallejo
-	VallejoScoreSMB=False
-	VallejoScoreRDP=False
-	VallejoScoreVNC=False
-	VallejoScoreApache=False
-	VallejoScorePing=True
-	VallejoScoreMysql=False
-	VallejoScoreVSFTPD=False
-	VallejoScoreSSH=False
-	VallejoScoreSMTP=False
-	VallejoScoreDNS=False
+	VallejoScore_internet=True
+	VallejoScore_samba=False
+	VallejoScore_rdp=False
+	VallejoScore_vnc=True
+	VallejoScore_apache=True
+	VallejoScore_mysql=False
+	VallejoScore_ftp=False
+	VallejoScore_ssh=False
+	VallejoScore_smtp=False
+	VallejoScore_dns=False
 	
 	Team2=SantaCruz
-	SantaCruzScoreSMB=False
-	SantaCruzScoreRDP=False
-	SantaCruzScoreVNC=False
-	SantaCruzScoreApache=False
-	SantaCruzScorePing=True
-	SantaCruzScoreMysql=False
-	SantaCruzScoreVSFTPD=False
-	SantaCruzScoreSSH=False
-	SantaCruzScoreSMTP=False
-	SantaCruzScoreDNS=False
+	SantaCruzScore_internet=True
+	SantaCruzScore_samba=True
+	SantaCruzScore_rdp=False
+	SantaCruzScore_vnc=False
+	SantaCruzScore_apache=False
+	SantaCruzScore_mysql=True
+	SantaCruzScore_ftp=False
+	SantaCruzScore_ssh=False
+	SantaCruzScore_smtp=False
+	SantaCruzScore_dns=False
+	
