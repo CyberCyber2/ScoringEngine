@@ -208,6 +208,7 @@ def checkInternet(ip):
     return pingstatus
 
 def checkFTP(ip, port, checkfile, filehash, currInject):
+    #FTP BANNER GRAB
     if (currInject == "1"):
         ftpstatus = "Fail"
         try:
@@ -218,8 +219,8 @@ def checkFTP(ip, port, checkfile, filehash, currInject):
             print("ftpPath:" + ftpPath)
             print("serverFTPDir:" + serverFTPDir)
             ftp = ftplib.FTP(ip) 
-            ftp.login(ftpUSR, ftpPWD)
             ftp.cwd(ftpPath)
+            ftp.login(ftpUSR, ftpPWD)
             ftp.retrbinary("RETR " + checkfile, open(checkfile, 'wb').write)
             f = "/home/" + serverFTPDir + "/Desktop/" + checkfile #FILE DOWNLOADED FROM CLIENT TO SERVER
             checkHash = os.popen(("sha1sum " + f + "| cut -d' ' -f1")).read()
@@ -453,6 +454,7 @@ def grapherFunction():
         table.set_fontsize(14)
         table.scale(1,4)
         ax.axis('off')
+        plt.figure(figsize=(300,300))
         plt.savefig("InjectSLA.png")
         time.sleep(checkInterval)
 
