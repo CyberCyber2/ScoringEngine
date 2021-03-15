@@ -1,4 +1,3 @@
-  
 import matplotlib.pyplot as plt 
 import subprocess, platform, os
 import hashlib
@@ -17,7 +16,7 @@ import ftplib
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#checkInterval=5
 ftpFile = ""
 ftpFileHash = ""
-ftpPath = ""
+ftpPath = "" 
 ftpUSR = ""
 ftpPWD = ""
 serverFTPDir = ""
@@ -53,6 +52,10 @@ class Team:
         self.apacheHIST = []
         self.sambaHIST = []
         self.sshHIST = []
+        self.mysqlHIST = []
+        self.dnsHIST = []
+        self.rdpHIST = []
+        self.smtpHIST = []
     def getName(self):
         return self.name
     def getAddress(self):
@@ -131,11 +134,64 @@ class Team:
             sshReliability = str(self.sshHIST.count("1") + self.sshHIST.count("0") * (-5))
             return sshReliability    
 
+        if service == "rdp":
+            print("Service is RDP")
+            if (checkRDP(str(self.getAddress())) == "Ok"):
+                self.rdpHIST.append("1")
+                print("rdp reliable, added 1")
+                print(self.rdpHIST)
+            else:
+                self.rdpHIST.append("0")
+                print("rdp unreliable, added 0")
+                print(self.rdpHIST)
+            rdpReliability = str(self.rdpHIST.count("1") + self.rdpHIST.count("0") * (-5))
+            return rdpReliability    
+
+        if service == "mysql":
+            print("Service is mysql")
+            if (checkMYSQL(str(self.getAddress())) == "Ok"):
+                self.mysqlHIST.append("1")
+                print("mysql reliable, added 1")
+                print(self.mysqlHIST)
+            else:
+                self.mysqlHIST.append("0")
+                print("mysql unreliable, added 0")
+                print(self.mysqlHIST)
+            mysqlReliability = str(self.mysqlHIST.count("1") + self.mysqlHIST.count("0") * (-5))
+            return mysqlReliability    
+
+        if service == "dns":
+            print("Service is DNS")
+            if (checkDNS(str(self.getAddress())) == "Ok"):
+                self.dnsHIST.append("1")
+                print("DNS reliable, added 1")
+                print(self.dnsHIST)
+            else:
+                self.dnsHIST.append("0")
+                print("dns unreliable, added 0")
+                print(self.dnsHIST)
+            dnsReliability = str(self.dnsHIST.count("1") + self.dnsHIST.count("0") * (-5))
+            return dnsReliability    
+
+        if service == "smtp":
+            print("Service is smtp")
+            if (checkSMTP(str(self.getAddress())) == "Ok"):
+                self.smtpHIST.append("1")
+                print("smtp reliable, added 1")
+                print(self.dnsHIST)
+            else:
+                self.smtpHIST.append("0")
+                print("smtp unreliable, added 0")
+                print(self.smtpHIST)
+            smtpReliability = str(self.smtpHIST.count("1") + self.smtpHIST.count("0") * (-5))
+            return smtpReliability  
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 allTeams = [
-    Team('Vallejo', '192.168.1.249'),
-    Team('SantaCruz', '127.0.0.1')
+    Team('Oakland', '10.4.2.38'),
+    Team('Fresno', '10.4.2.53'),
+    Team('Sacramento', '10.4.2.20')
+    Team('Santacruz', '10.4.2.55')
 ]
 def similar(a, b): #Just incase the hash has an extra space, don't feel like removing space
     return SequenceMatcher(None, a, b).ratio()
@@ -216,7 +272,7 @@ def checkSMB(ip, teamName, cI):
     else:
         print("SMB ERROR: Inject ID not found for " + cI + " of type: " + str(type(cI)))
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-def checkDNS(ip, recordType): 
+def checkDNS(ip): 
     if (os.system("nslookup " + ip + "| grep addr.arpa")):
         return ("Ok")
     else:
@@ -321,6 +377,10 @@ def grapherFunction():
         injectSMBCurr = config.get('Injects', 'smbCurrInject')
         injectApacheCurr = config.get('Injects', 'apacheCurrInject')
         injectSSHCurr = config.get('Injects', 'sshCurrInject')
+        injectSMTPCurr = ""
+        injectSSHCurr = ""
+        injectRDPCurr = ""
+        injectDNSCurr = ""
 
         checkInterval = int(config.get('General', 'checkInterval'))
         ftpFile = config.get('General', 'ftpFile')
@@ -343,7 +403,7 @@ def grapherFunction():
     #~~~~~~~~~PLOT~~~~~~~~~# 
         fig = plt.figure(dpi=80)
         ax = fig.add_subplot(1,1,1)
-        table_data=[[" "], ["Internet"], ["Apache2"], ["SMB"], ["SSH"]] # ["Internet"], ["Apache2"], ["SMB"], ["SSH"]
+        table_data=[[" "], ["Internet"], ["Apache2"], ["SMB"], ["SSH"], ["RDP"], ["MYSQL"], ["DNS"], ["SMTP"]] # ["Internet"], ["Apache2"], ["SMB"], ["SSH"]
         for t in allTeams:
             table_data[0].append(t.getName())
             #
@@ -366,6 +426,26 @@ def grapherFunction():
                 table_data[4].append(str(checkSSH(t.getAddress(), sshPRT, sshUSR, sshPWD, injectSSHCurr)) + ":" + str(t.countUptime("ssh", injectSSHCurr)))
             if (not t.isScored("ssh")):
                 table_data[4].append("N/A")
+
+            if (t.isScored("rdp")):
+                table_data[5].append(str(checkRDP(t.getAddress())) + ":" + str(t.countUptime("rdp", injectRDPCurr)))
+            if (not t.isScored("rdp")):
+                table_data[5].append("N/A")
+
+            if (t.isScored("mysql")):
+                table_data[6].append(str(checkMYSQL(t.getAddress())) + ":" + str(t.countUptime("mysql", injectMYSQLcurr)))
+            if (not t.isScored("mysql")):
+                table_data[6].append("N/A")
+
+            if (t.isScored("dns")):
+                table_data[7].append(str(checkDNS(t.getAddress())) + ":" + str(t.countUptime("dns", injectDNSCurr)))
+            if (not t.isScored("dns")):
+                table_data[7].append("N/A")
+
+            if (t.isScored("smtp")):
+                table_data[8].append(str(checkSMTP(t.getAddress())) + ":" + str(t.countUptime("smtp", injectSMTPCurr)))
+            if (not t.isScored("dns")):
+                table_data[8].append("N/A")
             #
 
             #table_data[1].append(str(checkFTP(str(t.getAddress()),"21", ftpFile, ftpFileHash)) + ":" + str(t.countUptime("ftp" , injectSMBCurr)))
