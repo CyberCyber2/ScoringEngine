@@ -149,7 +149,7 @@ class Team:
 
         if service == "mysql":
             print("Service is mysql")
-            if (checkMYSQL(str(self.getAddress())) == "Ok"):
+            if (checkMYSQL(str(self.getAddress(), mySQL_PWD)) == "Ok"):
                 self.mysqlHIST.append("1")
                 print("mysql reliable, added 1")
                 print(self.mysqlHIST)
@@ -433,7 +433,7 @@ def grapherFunction():
                 table_data[5].append("N/A")
 
             if (t.isScored("mysql")):
-                table_data[6].append(str(checkMYSQL(t.getAddress())) + ":" + str(t.countUptime("mysql", injectMYSQLcurr)))
+                table_data[6].append(str(checkMYSQL(t.getAddress(), mySQL_PWD)) + ":" + str(t.countUptime("mysql", injectMYSQLcurr)))
             if (not t.isScored("mysql")):
                 table_data[6].append("N/A")
 
