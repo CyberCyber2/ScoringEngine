@@ -452,10 +452,9 @@ def grapherFunction():
             #table_data[1].append(str(checkFTP(str(t.getAddress()),"21", ftpFile, ftpFileHash)) + ":" + str(t.countUptime("ftp" , injectSMBCurr)))
         table = ax.table(cellText=table_data, loc='center')
         table.set_fontsize(14)
-        table.scale(1,4)
+        table.scale(1,5)
         ax.axis('off')
-        plt.figure(figsize=(300,300))
-        plt.savefig("InjectSLA.png")
+        plt.savefig("InjectSLA.png", bbox_inches = 'tight')
         time.sleep(checkInterval)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
