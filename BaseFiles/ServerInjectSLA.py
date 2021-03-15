@@ -178,7 +178,7 @@ class Team:
             if (checkSMTP(str(self.getAddress())) == "Ok"):
                 self.smtpHIST.append("1")
                 print("smtp reliable, added 1")
-                print(self.dnsHIST)
+                print(self.smtpHIST)
             else:
                 self.smtpHIST.append("0")
                 print("smtp unreliable, added 0")
@@ -190,7 +190,7 @@ class Team:
 allTeams = [
     Team('Oakland', '10.4.2.38'),
     Team('Fresno', '10.4.2.53'),
-    Team('Sacramento', '10.4.2.20')
+    Team('Sacramento', '10.4.2.20'),
     Team('Santacruz', '10.4.2.55')
 ]
 def similar(a, b): #Just incase the hash has an extra space, don't feel like removing space
