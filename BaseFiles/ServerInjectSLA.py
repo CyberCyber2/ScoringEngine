@@ -36,6 +36,13 @@ sshPRT = ""
 injectSSHCurr = ""
 injectSMBCurr = ""
 injectApacheCurr = ""
+injectSMTPCurr = ""
+injectSSHCurr = ""
+injectRDPCurr = ""
+injectDNSCurr = ""
+injectSMBCurr = ""
+injectVNCCurr = ""
+injectFTPCurr = ""
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 class CaseConfigParser(SafeConfigParser):
@@ -56,6 +63,7 @@ class Team:
         self.dnsHIST = []
         self.rdpHIST = []
         self.smtpHIST = []
+        self.vncHIST = []
     def getName(self):
         return self.name
     def getAddress(self):
@@ -184,7 +192,20 @@ class Team:
                 print("smtp unreliable, added 0")
                 print(self.smtpHIST)
             smtpReliability = str(self.smtpHIST.count("1") + self.smtpHIST.count("0") * (-5))
-            return smtpReliability  
+            return smtpReliability 
+
+        if service == "vnc":
+            print("Service is vnc")
+            if (checkVNC(str(self.getAddress())) == "Ok"):
+                self.vncHIST.append("1")
+                print("vnc reliable, added 1")
+                print(self.vncHIST)
+            else:
+                self.vncHIST.append("0")
+                print("vnc unreliable, added 0")
+                print(self.vncHIST)
+            vncReliability = str(self.vnc.count("1") + self.vncHIST.count("0") * (-5))
+            return vncReliability 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 allTeams = [
@@ -343,7 +364,7 @@ def check_apache2(ip, cI):
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 def grapherFunction():
     while (True): 
-    #~~~~~~~~Variables~~~~~~~~#
+#~~~~~~~~~~~VARIABLES~~~~~~~~~~~#
         #Below Parameters on Injects.cnf. Must be same for ALL clients
         global ftpFile
         global ftpFileHash
@@ -372,7 +393,14 @@ def grapherFunction():
         global injectSMBCurr
         global injectApacheCurr
         global injectSSHCurr
-    #~~~~~~~~~~~~~~~~~~~~~~#
+        global injectSMTPCurr 
+        global injectSSHCurr 
+        global injectRDPCurr 
+        global injectDNSCurr 
+        global injectSMBCurr
+        global injectVNCCurr
+        global injectFTPCurr
+#~~~~~~~~~~~~~~~~~~~~~~#
         config = CaseConfigParser(os.environ)
         config.read('Injects.cnf')
         injectSMBCurr = config.get('Injects', 'smbCurrInject')
@@ -382,7 +410,10 @@ def grapherFunction():
         injectSSHCurr = ""
         injectRDPCurr = ""
         injectDNSCurr = ""
-
+        injectSMBCurr = ""
+        injectVNCCurr = ""
+        injectFTPCurr = ""
+#~~~~~~~~~~~~~~~~~~~~~~#
         checkInterval = int(config.get('General', 'checkInterval'))
         ftpFile = config.get('General', 'ftpFile')
         ftpFileHash = config.get('General', 'ftpFileHash')
@@ -404,7 +435,7 @@ def grapherFunction():
     #~~~~~~~~~PLOT~~~~~~~~~# 
         fig = plt.figure(dpi=80)
         ax = fig.add_subplot(1,1,1)
-        table_data=[[" "], ["Internet"], ["Apache2"], ["SMB"], ["SSH"], ["RDP"], ["MYSQL"], ["DNS"], ["SMTP"]] # ["Internet"], ["Apache2"], ["SMB"], ["SSH"]
+        table_data=[[" "], ["Internet"], ["Website"], ["SMB"], ["SSH"], ["RDP"], ["MYSQL"], ["DNS"], ["SMTP"], ["VNC"]] # ["Internet"], ["Apache2"], ["SMB"], ["SSH"]
         for t in allTeams:
             table_data[0].append(t.getName())
             #
@@ -447,6 +478,16 @@ def grapherFunction():
                 table_data[8].append(str(checkSMTP(t.getAddress())) + ":" + str(t.countUptime("smtp", injectSMTPCurr)))
             if (not t.isScored("dns")):
                 table_data[8].append("N/A")
+
+            if (t.isScored("vnc")):
+                table_data[9].append(str(checkVNC(t.getAddress())) + ":" + str(t.countUptime("vnc", injectVNCurr)))
+            if (not t.isScored("vnc")):
+                table_data[9].append("N/A")
+
+            if (t.isScored("ftp")):
+                table_data[10].append(str(checkFTP(t.getAddress())) + ":" + str(t.countUptime("ftp", injectFTPCurr)))
+            if (not t.isScored("ftp")):
+                table_data[10].append("N/A")
             #
 
             #table_data[1].append(str(checkFTP(str(t.getAddress()),"21", ftpFile, ftpFileHash)) + ":" + str(t.countUptime("ftp" , injectSMBCurr)))
