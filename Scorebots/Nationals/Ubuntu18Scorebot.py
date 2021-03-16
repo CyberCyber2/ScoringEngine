@@ -89,7 +89,7 @@ allTasks = [
 	Task('Returner','Prohibited MP3 files removed', 5, '[ ! "$(grep -R Roblox /home/cyber)" ]'),
 	Task('Returner','Martian packets logged', 5, '[ "$(grep net.ipv4.conf.all.log_martians /etc/sysctl.conf | grep 1)" ]'),
 	Task('Returner','login.defs Max password age set', 5, '[ ! "$(grep 120 /etc/login.defs)" ]'),
-	Task('Returner','Hidden sudoers file removed', 5, '[ ! "$()" ]'),
+	Task('Returner','Hidden sudoers README setting removed', 5, '[ ! "$(grep NOPASSWD /etc/sudoers.d/README)" ]'),
 	Task('Returner','Correct permissions on /etc/passwd set', 5, '[ ! "$(stat -c "%a %n" /etc/passwd | grep 747)" ]'),
 	Task('Returner','/etc/host malicious domain direction fixed', 5, '[ ! "$(grep virus.com /etc/hosts)" ]'),
 	Task('Returner','Sysctl execshield set', 5, '[ "$(grep kernel.exec-shield /etc/sysctl.conf)" ]'),
@@ -102,16 +102,15 @@ allTasks = [
 	Task('Returner','Bad permission on SSH keys directory fixed', 2, '[ "$(stat -c "%a %n" ~/.ssh | grep 700)" ]'),
 	Task('Returner','Bad Crontab removed', 5, '[ "$(grep netcat /var/spool/cron/crontabs/cyber)" ]'),
 	Task('Returner','Insecure protocol DECNET blocked to non system accounts', 5, '[ "$(grep net-pf-12 /etc/modprobe.d/blacklist-rare-network.conf | grep off)" ]'),
-	Task('Returner','APT netcat installation removed', 5, '[ "$()" ]'),
+	Task('Returner','APT backdoor installation', 5, '[ ! "$(grep "doing-your" /etc/apt/sources.list)" ]'),
 	Task('Returner','Firefox Backdoored', 5, '[ ! "$(grep netcat /usr/bin/firefox)" ]'),
+	Task('Returner','BASHRC fake sudo', 5, '[ "$(grep reboot /root/.bashrc)" ]'),
 	#~~~Backdoors~~~#
-	Task('Returner','Data exfiltration script removed for /etc/passwd', 5, '[ "$()" ]'),
+	Task('Returner','Data exfiltration script removed for /etc/passwd', 5, '[ "$(ls /lib64 | grep exfil.py)" ]'),
 	#Task('Returner','Keylogger Removed', 5, '[ "$()" ]'),
-	Task('Returner','Bad user owns the Text Editor ATOM', 5, '[ ! "$(ls -al  /usr/bin | grep atom | grep ryan)" ]'),
+	Task('Returner','Bad user owns the Text Editor EMACS', 5, '[ ! "$(ls -al  /usr/bin | grep emacs | grep debruckenshire)" ]'),
 	Task('Returner','LD PRELOAD Rootkit removed', 5, '[ ! "$(grep ls /lib | grep libc-vdso.so.6)" ]'),
-	Task('Returner','UFW backdoored', 5, '[ "$()" ]'),
-	Task('Returner','POTT BASHRC fake sudo', 5, '[ "$()" ]'),
-	Task('Returner','POTT SSH backdoored', 5, '[ "$()" ]')
+	Task('Returner','UFW backdoored', 5, '[ ! "$(grep reboot /usr/sbin/ufw)" ]')
 #~~~Scenario~~~#
 ]
 groups = [] #groups that must exist, or else a penalty
