@@ -321,9 +321,14 @@ def checkSMB(ip, teamName, cI):
         print("SMB ERROR: Inject ID not found for " + cI + " of type: " + str(type(cI)))
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 def checkDNS(ip, cI): 
-    if (os.system("nslookup " + ip + "| grep addr.arpa")):
-        return ("Ok")
-    else:
+    try:
+        if (int(cI) == 1):
+            if (os.system("nslookup " + ip + "| grep addr.arpa")):
+                return ("Ok")
+        else:
+            return ("Fail")
+    except Exception as e:
+        print("RDP ERROR: " + str(e))
         return ("Fail")
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 def checkRDP(ip, cI): 
