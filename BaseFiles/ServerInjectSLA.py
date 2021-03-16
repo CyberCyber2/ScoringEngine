@@ -210,8 +210,14 @@ class Team:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 allTeams = [
-    Team('Linux', '192.168.1.249'),
-    Team('Windows', '127.0.0.1')
+    Team('Irvine', '10.4.2.51'),
+    Team('Vallejo', '10.4.2.60'),
+    Team('Berkely', '10.4.2.40'),
+    Team('Oakland', '10.4.2.38'),
+    Team('Fresno', '10.4.2.52'),
+    Team('Sacramento', '10.4.2.10'),
+    Team('Santacruz', '10.4.2.55'),
+    Team('Workstation', '10.4.2.53')
 ]
 def similar(a, b): #Just incase the hash has an extra space, don't feel like removing space
     return SequenceMatcher(None, a, b).ratio()
