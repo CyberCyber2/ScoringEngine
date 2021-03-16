@@ -213,10 +213,10 @@ allTeams = [
     #Team('Irvine', '10.4.2.51'),
     #Team('Vallejo', '10.4.2.60'),
    # Team('Berkely', '10.4.2.40'),
-    Team('Oakland', '10.4.2.38') #,
+   # Team('Oakland', '10.4.2.38') #,
     #Team('Fresno', '10.4.2.52'),
     #Team('Sacramento', '10.4.2.10'),
-    #Team('Santacruz', '10.4.2.55'),
+    Team('Santacruz', '10.4.2.55') #,
     #Team('Workstation', '10.4.2.53')
 ]
 def similar(a, b): #Just incase the hash has an extra space, don't feel like removing space
@@ -323,12 +323,15 @@ def checkSMB(ip, teamName, cI):
 def checkDNS(ip, cI): 
     try:
         if (int(cI) == 1):
+            print ("CI IS ONE")
             if (os.system("nslookup " + ip + "| grep addr.arpa")):
+                print ("DNS WORKING")
                 return ("Ok")
         else:
+            print("DNS BROKEN")
             return ("Fail")
     except Exception as e:
-        print("RDP ERROR: " + str(e))
+        print("DNS ERROR: " + str(e))
         return ("Fail")
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 def checkRDP(ip, cI): 
@@ -538,7 +541,7 @@ def grapherFunction():
 
             if (t.isScored("smtp")):
                 table_data[8].append(str(checkSMTP(t.getAddress(), injectSMTPCurr)) + ":" + str(t.countUptime("smtp", injectSMTPCurr)))
-            if (not t.isScored("dns")):
+            if (not t.isScored("smtp")):
                 table_data[8].append("N/A")
 
             if (t.isScored("vnc")):
@@ -558,6 +561,7 @@ def grapherFunction():
         table.scale(1,3)
         ax.axis('off')
         plt.savefig("InjectSLA.png", bbox_inches = 'tight')
+        print ("CHECKKKKKKKKKKKKKKKKK: " + str(checkDNS("10.4.2.55", 1)))
         time.sleep(checkInterval)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
