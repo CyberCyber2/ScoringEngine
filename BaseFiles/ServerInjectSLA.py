@@ -324,7 +324,7 @@ def checkDNS(ip, cI):
     try:
         if (int(cI) == 1):
             print ("CI IS ONE")
-            if (os.system("nslookup " + ip + "| grep addr.arpa")):
+            if (testSLABool("nslookup " + ip + " | grep addr.arpa")):
                 print ("DNS WORKING")
                 return ("Ok")
         else:
