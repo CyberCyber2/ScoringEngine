@@ -538,7 +538,7 @@ def grapherFunction():
 
             if (t.isScored("smtp")):
                 table_data[8].append(str(checkSMTP(t.getAddress(), injectSMTPCurr)) + ":" + str(t.countUptime("smtp", injectSMTPCurr)))
-            if (not t.isScored("dns")):
+            if (not t.isScored("smtp")):
                 table_data[8].append("N/A")
 
             if (t.isScored("vnc")):
