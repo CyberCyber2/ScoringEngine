@@ -323,12 +323,15 @@ def checkSMB(ip, teamName, cI):
 def checkDNS(ip, cI): 
     try:
         if (int(cI) == 1):
+            print ("CI IS ONE")
             if (os.system("nslookup " + ip + "| grep addr.arpa")):
+                print ("DNS WORKING")
                 return ("Ok")
         else:
+            print("DNS BROKEN")
             return ("Fail")
     except Exception as e:
-        print("RDP ERROR: " + str(e))
+        print("DNS ERROR: " + str(e))
         return ("Fail")
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 def checkRDP(ip, cI): 
