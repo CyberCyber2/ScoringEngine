@@ -9,27 +9,48 @@
 	serverFTPDir=/home/server/Desktop
 	apacheCheck=Erdie
 	apacheWebsite=index.html
+	apachePRT=80
 	dataDirectory=/home/server/Desktop/data/
 	mySQL_Query="SELECT name, address FROM customers"
-	smbUSR=test
-	smbPWD=test
+	smbUSR=Linux
+	smbPWD=Linux
 	smbSHR=sambashare
 	smbSHRFile=CustomerData.txt
-	sshUSR=test
-	sshPWD=test
+	sshUSR=cyber
+	sshPWD=cyber
 	smbPRT=22
 	mySQL_PWD=HotPockets1
 [Injects]
 #SMB
-	#1-->download teamname.txt from smbSHR
-	#2-->download smbSHRFile from the sambashare
+	#1-->Banner grab and Linux samba
+	#2-->download $smbSHRFile from the $smbSHR
 	smbCurrInject=1
 #SSH
-	#1-->check for connectivity
+	#1-->check for connectivity on $sshPRT
 	sshCurrInject=1
 #APACHE2
-	#1-->Check string for apacheCheck
+	#1-->Check website for apacheCheck
 	apacheCurrInject=1
+#SMTP
+	#1-->Banner grab for FTP
+	smtpCurrInject=1
+#RDP
+	#1-->
+	rdpCurrInject=1
+#MYSQL
+	#1-->See if mysql port open
+	#2-->Run $mySQL Query
+	mysqlCurrInject=1
+#DNS
+	#1-->Check for A record
+	dnsCurrInject=1
+#VNC
+	#1-->Scan for VNC port
+	vncCurrInject=1
+#FTP
+	#1-->Banner grab FTP
+	#2-->Download file via FTP
+	ftpCurrInject=1	
 
 [Desc]
 	Inject1="Linux - Add the file "CustomerData.txt" to the sambashare "sambashare"
@@ -39,27 +60,27 @@
 	Inject5="Linux5 - Add the file "Knadene(idk how 2 spell)... from suriya Desktop onto ahri's sambashare named sambashare""
 
 [Teams]
-	Team1=Vallejo
-	VallejoScore_internet=True
-	VallejoScore_samba=False
-	VallejoScore_rdp=False
-	VallejoScore_vnc=True
-	VallejoScore_apache=True
-	VallejoScore_mysql=False
-	VallejoScore_ftp=False
-	VallejoScore_ssh=False
-	VallejoScore_smtp=False
-	VallejoScore_dns=False
+	Team1=Linux
+	LinuxScore_internet=True
+	LinuxScore_apache=True
+	LinuxScore_samba=True
+	LinuxScore_ssh=True
+	LinuxScore_rdp=False
+	LinuxScore_vnc=True
+	LinuxScore_mysql=False
+	LinuxScore_ftp=True
+	LinuxScore_smtp=False
+	LinuxScore_dns=False
 	
-	Team2=SantaCruz
-	SantaCruzScore_internet=True
-	SantaCruzScore_samba=True
-	SantaCruzScore_rdp=False
-	SantaCruzScore_vnc=False
-	SantaCruzScore_apache=False
-	SantaCruzScore_mysql=True
-	SantaCruzScore_ftp=False
-	SantaCruzScore_ssh=False
-	SantaCruzScore_smtp=False
-	SantaCruzScore_dns=False
+	Team2=Windows
+	WindowsScore_internet=True
+	WindowsScore_apache=True
+	WindowsScore_samba=True
+	WindowsScore_ssh=True
+	WindowsScore_rdp=False
+	WindowsScore_vnc=False
+	WindowsScore_mysql=False
+	WindowsScore_ftp=True
+	WindowsScore_smtp=False
+	WindowsScore_dns=False
 	
