@@ -126,7 +126,7 @@ allTasks = [
     #~~~Backdoors~~~#
     #!!!# Task('Returner','Anacron job removed', 5, '[ ! "$(grep netcat /etc/cron.d/anacron)" ]'),
     Task('Returner','Ubuntu 16.04 Kernel Root Exploit Files removed', 5, '[ ! "$(ls -al /usr/lib | grep 39772)" ]'),
-    Task('Returner','Kernel Updated', 5, '[ ! "$(uname -a | grep  4.4.0-203-generic)" ]'),
+    Task('Returner','Kernel Updated', 5, '[ ! "$(uname -a | grep  4.4.0-204-generic)" ]'),
     #rootkit hides itself, can't score#Task('Returner','Bad kernel module removed for diamorphine',5, '[ !"$(grep "diamorphine" /proc/modules)" ]')
     Task('Returner','POTT Driver backdoor', 5, '[ ! "$(grep "RSHELL" /etc/udev/rules.d/71-vbox-kernel-drivers.rules)" ]'),
     Task('Returner','Apache2 mod_backdoor removed', 5, '[ ! "$(apache2ctl -t -D DUMP_MODULES | grep backdoor)" ]')
