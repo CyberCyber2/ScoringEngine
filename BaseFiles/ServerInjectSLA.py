@@ -329,7 +329,7 @@ def checkDNS(ip, cI):
 def checkRDP(ip, cI): 
     try:
         if (int(cI) == 1):
-            if (testSLABool("nmap 127.0.0.1 -p 3306 | grep open")):
+            if (testSLABool("nmap 127.0.0.1 -p 3389 | grep open")):
                 return ("Ok")
         else:
             return ("Fail")
