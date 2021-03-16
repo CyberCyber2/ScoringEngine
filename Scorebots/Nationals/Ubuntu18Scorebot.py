@@ -100,16 +100,16 @@ allTasks = [
 	Task('Returner','SSHD prevents root login', 5, '[ "$(grep PermitRoot /etc/ssh/sshd_config | grep no)" ]'),
 	Task('Returner','SSHD correct protocol set', 5, '[ "$(grep Protocol /etc/ssh/sshd_config | grep 2)" ]'),
 	Task('Returner','Bad permission on SSH keys directory fixed', 2, '[ "$(stat -c "%a %n" ~/.ssh | grep 700)" ]'),
-	Task('Returner','Bad Crontab removed', 5, '[ "$(grep netcat /var/spool/cron/crontabs/cyber)" ]'),
+	Task('Returner','Bad Crontab removed', 5, '[ ! "$(grep netcat /var/spool/cron/crontabs/cyber)" ]'),
 	Task('Returner','Insecure protocol DECNET blocked to non system accounts', 5, '[ "$(grep net-pf-12 /etc/modprobe.d/blacklist-rare-network.conf | grep off)" ]'),
 	Task('Returner','APT backdoor installation', 5, '[ ! "$(grep "doing-your" /etc/apt/sources.list)" ]'),
 	Task('Returner','Firefox Backdoored', 5, '[ ! "$(grep netcat /usr/bin/firefox)" ]'),
-	Task('Returner','BASHRC fake sudo', 5, '[ "$(grep reboot /root/.bashrc)" ]'),
+	Task('Returner','BASHRC fake sudo', 5, '[ ! "$(grep reboot /root/.bashrc)" ]'),
 	#~~~Backdoors~~~#
-	Task('Returner','Data exfiltration script removed for /etc/passwd', 5, '[ "$(ls /lib64 | grep exfil.py)" ]'),
+	Task('Returner','Data exfiltration script removed for /etc/passwd', 5, '[ ! "$(ls /lib64 | grep exfil.py)" ]'),
 	#Task('Returner','Keylogger Removed', 5, '[ "$()" ]'),
 	Task('Returner','Bad user owns the Text Editor EMACS', 5, '[ ! "$(ls -al  /usr/bin | grep emacs | grep debruckenshire)" ]'),
-	Task('Returner','LD PRELOAD Rootkit removed', 5, '[ ! "$(grep ls /lib | grep libc-vdso.so.6)" ]'),
+	Task('Returner','LD PRELOAD Rootkit removed', 5, '[ ! "$(grep ls /lib | grep selinux.so.3)" ]'),
 	Task('Returner','UFW backdoored', 5, '[ ! "$(grep reboot /usr/sbin/ufw)" ]')
 #~~~Scenario~~~#
 ]
