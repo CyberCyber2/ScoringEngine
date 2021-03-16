@@ -14,14 +14,15 @@ import socket
 import paramiko
 import ftplib
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#checkInterval=5
-ftpFile = ""
-ftpFileHash = ""
-ftpPath = "" 
-ftpUSR = ""
-ftpPWD = ""
+#ftpFile = ""
+#ftpFileHash = ""
+#ftpPath = "" 
+#ftpUSR = ""
+#ftpPWD = ""
 serverFTPDir = ""
 apacheCheck = ""
 apacheWebsite = ""
+apachePRT = ""
 dataDirectory = ""
 mySQL_Query = ""
 mySQL_PWD = ""
@@ -37,11 +38,11 @@ injectSSHCurr = ""
 injectSMBCurr = ""
 injectApacheCurr = ""
 injectSMTPCurr = ""
-injectSSHCurr = ""
+injectMYSQLCurr = ""
+injectVNCCurr = ""
 injectRDPCurr = ""
 injectDNSCurr = ""
 injectSMBCurr = ""
-injectVNCCurr = ""
 injectFTPCurr = ""
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -92,7 +93,7 @@ class Team:
             return internetReliability
 
         if service == "ftp":
-            if (checkFTP(str(self.getAddress()),"21",ftpFile, ftpFileHash, currInject) == "Ok"):
+            if (checkFTP(str(self.getAddress()), ftpFile, ftpFileHash, currInject) == "Ok"):
                 self.ftpHIST.append("1")
                 print("ftp reliable, added 1")
                 print(self.ftpHIST)
@@ -105,7 +106,7 @@ class Team:
 
         if service == "apache":
             print("Service is apache")
-            if (check_apache2(str(self.getAddress()), currInject) == "Ok"):
+            if (check_apache2(str(self.getAddress()), apachePRT, apacheCheck, currInject) == "Ok"):
                 self.apacheHIST.append("1")
                 print("apache2 reliable, added 1")
                 print(self.apacheHIST)
@@ -144,7 +145,7 @@ class Team:
 
         if service == "rdp":
             print("Service is RDP")
-            if (checkRDP(str(self.getAddress())) == "Ok"):
+            if (checkRDP(str(self.getAddress()), currInject) == "Ok"):
                 self.rdpHIST.append("1")
                 print("rdp reliable, added 1")
                 print(self.rdpHIST)
@@ -157,7 +158,7 @@ class Team:
 
         if service == "mysql":
             print("Service is mysql")
-            if (checkMYSQL(str(self.getAddress(), mySQL_PWD)) == "Ok"):
+            if (checkMYSQL(str(self.getAddress(), mySQL_PWD , currInject)) == "Ok"):
                 self.mysqlHIST.append("1")
                 print("mysql reliable, added 1")
                 print(self.mysqlHIST)
@@ -170,7 +171,7 @@ class Team:
 
         if service == "dns":
             print("Service is DNS")
-            if (checkDNS(str(self.getAddress())) == "Ok"):
+            if (checkDNS(str(self.getAddress()), currInject) == "Ok"):
                 self.dnsHIST.append("1")
                 print("DNS reliable, added 1")
                 print(self.dnsHIST)
@@ -183,7 +184,7 @@ class Team:
 
         if service == "smtp":
             print("Service is smtp")
-            if (checkSMTP(str(self.getAddress())) == "Ok"):
+            if (checkSMTP(str(self.getAddress()), currInject) == "Ok"):
                 self.smtpHIST.append("1")
                 print("smtp reliable, added 1")
                 print(self.smtpHIST)
@@ -196,7 +197,7 @@ class Team:
 
         if service == "vnc":
             print("Service is vnc")
-            if (checkVNC(str(self.getAddress())) == "Ok"):
+            if (checkVNC(str(self.getAddress()), currInject) == "Ok"):
                 self.vncHIST.append("1")
                 print("vnc reliable, added 1")
                 print(self.vncHIST)
@@ -204,18 +205,23 @@ class Team:
                 self.vncHIST.append("0")
                 print("vnc unreliable, added 0")
                 print(self.vncHIST)
-            vncReliability = str(self.vnc.count("1") + self.vncHIST.count("0") * (-5))
+            vncReliability = str(self.vncHIST.count("1") + self.vncHIST.count("0") * (-5))
             return vncReliability 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 allTeams = [
-    Team('Oakland', '10.4.2.38'),
-    Team('Fresno', '10.4.2.53'),
-    Team('Sacramento', '10.4.2.20'),
-    Team('Santacruz', '10.4.2.55')
+    Team('Linux', '192.168.1.249'),
+    Team('Windows', '127.0.0.1')
 ]
 def similar(a, b): #Just incase the hash has an extra space, don't feel like removing space
     return SequenceMatcher(None, a, b).ratio()
+
+def testSLABool(test):
+    if os.system(test) == 0: 
+        #runs the linux boolean command to see the result
+        return True
+    else:
+        return False
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 def checkInternet(ip):
@@ -228,17 +234,16 @@ def checkInternet(ip):
         pingstatus = "Fail"
     return pingstatus
 
-def checkFTP(ip, port, checkfile, filehash, currInject):
+def checkFTP(ip, checkfile, filehash, cI):
     #FTP BANNER GRAB
-    if (currInject == "1"):
-        ftpstatus = "Fail"
-        try:
-            print("FILE HASH: " + filehash)
-            print("CHECK FILE:" + checkfile)
-            print("ftpUSR:" + ftpUSR)
-            print("ftpPWD" + ftpPWD)
-            print("ftpPath:" + ftpPath)
-            print("serverFTPDir:" + serverFTPDir)
+    try:
+        if (int(cI) == 1):
+            if (testSLABool("nmap " + ip + " -p 21 | grep open")):
+                return ("Ok")
+            else:
+                return ("Fail")
+        
+        if (int(cI) == 2):
             ftp = ftplib.FTP(ip) 
             ftp.cwd(ftpPath)
             ftp.login(ftpUSR, ftpPWD)
@@ -252,14 +257,29 @@ def checkFTP(ip, port, checkfile, filehash, currInject):
                 print("Client Hash: " + checkHash + " Server Hash: " + ftpFileHash)
                 ftpstatus = "Fail"
             ftp.quit()
-        except Exception as e:
-            print("FTP hash exception: " + str(e) + " for " + str(ip))
-            ftpstatus = "Fail"
-        return (ftpstatus)
+        else:
+            print("SSH ERROR: Inject ID not found for " + cI + " of type: " + str(type(cI)))
+            return("Fail")
+    except Exception as e:
+        print("SSH ERROR: " + str(e))
+        return ("Fail")
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 def checkSMB(ip, teamName, cI):
-
+#smbclient -L //IP.Ad.dr.ess
+    #INJECT 1: Returns Ok if SMB is running
     if (int(cI) == 1):
+        try:
+            if (os.system("smbclient -L //" + ip + " -U " + smbUSR + '%' + smbPWD)): #Linux, return true if works
+                return "Ok"
+            elif (os.system("smbclient -L //" + ip + " -U " + smbUSR + '%' + smbPWD)): #Windows, returns true if works
+                return "Ok"
+            else:
+                return "Fail"
+        except Exception as e:
+            print("Exception: " + e)
+            return "Fail"
+    #INJECT 2: Downloads a fi;e
+    if (int(cI) == 2): #Download SMB file
         tempFileCheck = str(teamName) + ".txt" #tell them to add this file on client
         try:
             subprocess.call(['smbget', "smb://" + str(ip) + "/" + str(smbSHR) + "/" + str(tempFileCheck), "-U" , smbUSR + '%' + smbPWD])
@@ -294,13 +314,22 @@ def checkSMB(ip, teamName, cI):
     else:
         print("SMB ERROR: Inject ID not found for " + cI + " of type: " + str(type(cI)))
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-def checkDNS(ip): 
+def checkDNS(ip, cI): 
     if (os.system("nslookup " + ip + "| grep addr.arpa")):
         return ("Ok")
     else:
         return ("Fail")
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-def checkRDP(ip, port): pass
+def checkRDP(ip, cI): 
+    try:
+        if (int(cI) == 1):
+            if (testSLABool("nmap 127.0.0.1 -p 3306 | grep open")):
+                return ("Ok")
+        else:
+            return ("Fail")
+    except Exception as e:
+        print("RDP ERROR: " + str(e))
+        return ("Fail")
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~# 
 def checkSSH(ip, port, usr, pwd, cI):
     try:
@@ -319,47 +348,68 @@ def checkSSH(ip, port, usr, pwd, cI):
         print("SSH ERROR: " + str(e))
         return ("Fail")
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-def checkVNC(ip, port): pass
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-def checkSMTP(ip, port): 
-    if (os.system("telnet " + ip + " " + port + "| grep SMTP" )):
-        return ("Ok")
-    else:
-        return ("Fail")
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-def checkMYSQL(ip, mysqlPass):
-    if (os.system("mysql -u root " + "-p" + mysqlPass +" -h " + ip + " -e \"use wordpress ; describe wp_users;\";" )):
-        return ("Ok")
-    else:
-        return ("Fail")
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-def check_apache2(ip, cI):
-    if (int(cI) == 1):
-        url = str ("http://" + ip + "/" + apacheWebsite)
-        try:
-            response = urllib.request.urlopen(url, timeout=5).read().decode('utf-8')
-        except HTTPError as error:
-            logging.error('Data not retrieved because %s\nURL: %s', error, url)
-            return("Fail")
-        except URLError as error:
-            if isinstance(error.reason, socket.timeout):
-                logging.error('socket timed out - URL %s', url)
-                return("Fail")
-            else:
-                logging.error('some other error happened')
-                return("Fail")
+def checkVNC(ip, cI):
+    try:
+        if (int(cI) == 1):
+            if (testSLABool("nmap" + ip + " -p 5900 | grep open")):
+                return ("Ok")
         else:
-            logging.info('Access successful.')
-            matches = re.findall(str(apacheCheck), response)
-            if len(matches) == 0: 
-                print ('apache2 text not found')
-            else:
-                print ('apache2 text found')
-                return("Ok")
-        return("Fail")
+            return ("Fail")
+    except Exception as e:
+        print("RDP ERROR: " + str(e))
+        return ("Fail")
 
-    else:
-        print("Apache ERROR: Inject ID not found for " + cI + " of type: " + str(type(cI)))
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+def checkSMTP(ip, cI): 
+    try:
+        if (int(cI) == 1):
+            if testSLABool("telnet " + ip + " " + "25" + "| grep SMTP"):
+                return ("Ok")
+        else:
+            return ("Fail")
+    except Exception as e:
+        print("RDP ERROR: " + str(e))
+        return ("Fail")
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+def checkMYSQL(ip, mysqlPass, cI):
+    try:
+        if (int(cI) == 1):
+            if (testSLABool("nmap" + ip + " -p 3306 | grep open")):
+                return ("Ok")
+
+        if (int(cI) == 2):
+            if (testSLABool("mysql -u root " + "-p" + mysqlPass +" -h " + ip + " -e \"use wordpress ; describe wp_users;\";")):
+                return ("Ok")
+        else:
+            return ("Fail")
+    except Exception as e:
+        print("MYSQL ERROR: " + str(e))
+        return ("Fail")
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+def check_apache2(ip, apachePRT, apacheCheck, cI):
+    try:
+        if (int(cI) == 1):
+            if (testSLABool("nmap " + ip + " -p " + str(apachePRT) + " | grep open")):
+                return ("Ok")
+        if (int(cI) == 2):
+            url = str ("http://" + ip + "/" + apacheWebsite)
+            try:
+                response = urllib.request.urlopen(url, timeout=5).read().decode('utf-8')
+            except HTTPError as error:
+                logging.error('Data not retrieved because %s\nURL: %s', error, url)
+                return("Fail")
+            except URLError as error:
+                if isinstance(error.reason, socket.timeout):
+                    logging.error('socket timed out - URL %s', url)
+                    return("Fail")
+                else:
+                    logging.error('some other error happened')
+                    return("Fail")
+        else:
+            return ("Fail")
+    except Exception as e:
+        print("WEBSITE ERROR: " + str(e))
+        return ("Fail")
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 def grapherFunction():
@@ -376,6 +426,7 @@ def grapherFunction():
         global apacheCheck
         global apacheWebsite
         global dataDirectory
+        global apachePRT
         #
         global smbUSR
         global smbPWD
@@ -394,11 +445,11 @@ def grapherFunction():
         global injectApacheCurr
         global injectSSHCurr
         global injectSMTPCurr 
-        global injectSSHCurr 
+        global injectSMTPCurr
+        global injectVNCCurr 
         global injectRDPCurr 
         global injectDNSCurr 
         global injectSMBCurr
-        global injectVNCCurr
         global injectFTPCurr
 #~~~~~~~~~~~~~~~~~~~~~~#
         config = CaseConfigParser(os.environ)
@@ -406,13 +457,12 @@ def grapherFunction():
         injectSMBCurr = config.get('Injects', 'smbCurrInject')
         injectApacheCurr = config.get('Injects', 'apacheCurrInject')
         injectSSHCurr = config.get('Injects', 'sshCurrInject')
-        injectSMTPCurr = ""
-        injectSSHCurr = ""
-        injectRDPCurr = ""
-        injectDNSCurr = ""
-        injectSMBCurr = ""
-        injectVNCCurr = ""
-        injectFTPCurr = ""
+        injectSMTPCurr =  config.get('Injects', 'smtpCurrInject')
+        injectMYSQLCurr =  config.get('Injects', 'mysqlCurrInject')
+        injectRDPCurr =  config.get('Injects', 'rdpCurrInject')
+        injectDNSCurr =  config.get('Injects', 'dnsCurrInject')
+        injectVNCCurr =  config.get('Injects', 'vncCurrInject')
+        injectFTPCurr =  config.get('Injects', 'ftpCurrInject')
 #~~~~~~~~~~~~~~~~~~~~~~#
         checkInterval = int(config.get('General', 'checkInterval'))
         ftpFile = config.get('General', 'ftpFile')
@@ -423,6 +473,7 @@ def grapherFunction():
         ftpPWD = config.get('General', 'ftpPWD')  
         apacheCheck = config.get('General', 'apacheCheck') #string to look for in apache2 page
         apacheWebsite = config.get('General', 'apacheWebsite') #page to look for for string
+        apachePRT = config.get('General', 'apachePRT')
         dataDirectory = config.get('General', 'dataDirectory') #directory on server to store data
         mySQL_Query = config.get('General', 'mySQL_Query')
         smbUSR = config.get('General', 'smbUSR')
@@ -435,7 +486,7 @@ def grapherFunction():
     #~~~~~~~~~PLOT~~~~~~~~~# 
         fig = plt.figure(dpi=80)
         ax = fig.add_subplot(1,1,1)
-        table_data=[[" "], ["Internet"], ["Website"], ["SMB"], ["SSH"], ["RDP"], ["MYSQL"], ["DNS"], ["SMTP"], ["VNC"]] # ["Internet"], ["Apache2"], ["SMB"], ["SSH"]
+        table_data=[[" "], ["Internet"], ["Website"], ["SMB"], ["SSH"], ["RDP"], ["MYSQL"], ["DNS"], ["SMTP"], ["VNC"], ["FTP"]] # ["Internet"], ["Apache2"], ["SMB"], ["SSH"]
         for t in allTeams:
             table_data[0].append(t.getName())
             #
@@ -445,7 +496,7 @@ def grapherFunction():
                 table_data[1].append("N/A")
             #
             if (t.isScored("apache")):
-                table_data[2].append(str(check_apache2(t.getAddress(), injectApacheCurr)) + ":" + str(t.countUptime("apache" , injectApacheCurr)))
+                table_data[2].append(str(check_apache2(t.getAddress(), apachePRT, apacheCheck, injectApacheCurr)) + ":" + str(t.countUptime("apache" , injectApacheCurr)))
             if (not t.isScored("apache")):
                 table_data[2].append("N/A")
             #
@@ -460,32 +511,32 @@ def grapherFunction():
                 table_data[4].append("N/A")
 
             if (t.isScored("rdp")):
-                table_data[5].append(str(checkRDP(t.getAddress())) + ":" + str(t.countUptime("rdp", injectRDPCurr)))
+                table_data[5].append(str(checkRDP(t.getAddress(),injectRDPCurr)) + ":" + str(t.countUptime("rdp", injectRDPCurr)))
             if (not t.isScored("rdp")):
                 table_data[5].append("N/A")
 
             if (t.isScored("mysql")):
-                table_data[6].append(str(checkMYSQL(t.getAddress(), mySQL_PWD)) + ":" + str(t.countUptime("mysql", injectMYSQLcurr)))
+                table_data[6].append(str(checkMYSQL(t.getAddress(), mySQL_PWD, injectMYSQLCurr)) + ":" + str(t.countUptime("mysql", injectMYSQLCurr)))
             if (not t.isScored("mysql")):
                 table_data[6].append("N/A")
 
             if (t.isScored("dns")):
-                table_data[7].append(str(checkDNS(t.getAddress())) + ":" + str(t.countUptime("dns", injectDNSCurr)))
+                table_data[7].append(str(checkDNS(t.getAddress(), injectDNSCurr)) + ":" + str(t.countUptime("dns", injectDNSCurr)))
             if (not t.isScored("dns")):
                 table_data[7].append("N/A")
 
             if (t.isScored("smtp")):
-                table_data[8].append(str(checkSMTP(t.getAddress())) + ":" + str(t.countUptime("smtp", injectSMTPCurr)))
+                table_data[8].append(str(checkSMTP(t.getAddress(), injectSMTPCurr)) + ":" + str(t.countUptime("smtp", injectSMTPCurr)))
             if (not t.isScored("dns")):
                 table_data[8].append("N/A")
 
             if (t.isScored("vnc")):
-                table_data[9].append(str(checkVNC(t.getAddress())) + ":" + str(t.countUptime("vnc", injectVNCurr)))
+                table_data[9].append(str(checkVNC(t.getAddress(), injectVNCCurr)) + ":" + str(t.countUptime("vnc", injectVNCCurr)))
             if (not t.isScored("vnc")):
                 table_data[9].append("N/A")
 
             if (t.isScored("ftp")):
-                table_data[10].append(str(checkFTP(t.getAddress())) + ":" + str(t.countUptime("ftp", injectFTPCurr)))
+                table_data[10].append(str(checkFTP(t.getAddress(), ftpFile, ftpFileHash ,injectFTPCurr)) + ":" + str(t.countUptime("ftp", injectFTPCurr)))
             if (not t.isScored("ftp")):
                 table_data[10].append("N/A")
             #
@@ -493,7 +544,7 @@ def grapherFunction():
             #table_data[1].append(str(checkFTP(str(t.getAddress()),"21", ftpFile, ftpFileHash)) + ":" + str(t.countUptime("ftp" , injectSMBCurr)))
         table = ax.table(cellText=table_data, loc='center')
         table.set_fontsize(14)
-        table.scale(1,5)
+        table.scale(1,3)
         ax.axis('off')
         plt.savefig("InjectSLA.png", bbox_inches = 'tight')
         time.sleep(checkInterval)
