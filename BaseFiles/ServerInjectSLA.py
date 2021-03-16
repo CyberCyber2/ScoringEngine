@@ -216,7 +216,7 @@ allTeams = [
    # Team('Oakland', '10.4.2.38') #,
     #Team('Fresno', '10.4.2.52'),
     #Team('Sacramento', '10.4.2.10'),
-    Team('Santacruz', '10.4.2.55'),
+    Team('Santacruz', '10.4.2.55') #,
     #Team('Workstation', '10.4.2.53')
 ]
 def similar(a, b): #Just incase the hash has an extra space, don't feel like removing space
@@ -561,6 +561,7 @@ def grapherFunction():
         table.scale(1,3)
         ax.axis('off')
         plt.savefig("InjectSLA.png", bbox_inches = 'tight')
+        print ("CHECKKKKKKKKKKKKKKKKK: " + str(checkDNS("10.4.2.55", 1)))
         time.sleep(checkInterval)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
