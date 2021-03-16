@@ -68,14 +68,14 @@
 	IrvineScore_rdp=False
 	IrvineScore_vnc=False
 	IrvineScore_mysql=False
-	IrvineScore_ftp=False
+	IrvineScore_ftp=True
 	IrvineScore_smtp=False
 	IrvineScore_dns=False
 	
 	Team2=Vallejo
 	VallejoScore_internet=True
-	VallejoScore_apache=False
-	VallejoScore_samba=False
+	VallejoScore_apache=True
+	VallejoScore_samba=True
 	VallejoScore_ssh=False
 	VallejoScore_rdp=False
 	VallejoScore_vnc=False
@@ -88,9 +88,9 @@
 	BerkelyScore_internet=True
 	BerkelyScore_apache=False
 	BerkelyScore_samba=False
-	BerkelyScore_ssh=False
+	BerkelyScore_ssh=True
 	BerkelyScore_rdp=False
-	BerkelyScore_vnc=False
+	BerkelyScore_vnc=True
 	BerkelyScore_mysql=False
 	BerkelyScore_ftp=False
 	BerkelyScore_smtp=False
@@ -101,7 +101,7 @@
 	OaklandScore_apache=False
 	OaklandScore_samba=False
 	OaklandScore_ssh=False
-	OaklandScore_rdp=False
+	OaklandScore_rdp=True
 	OaklandScore_vnc=False
 	OaklandScore_mysql=False
 	OaklandScore_ftp=False
@@ -113,36 +113,36 @@
 	FresnoScore_apache=False
 	FresnoScore_samba=False
 	FresnoScore_ssh=False
-	FresnoScore_rdp=False
+	FresnoScore_rdp=True
 	FresnoScore_vnc=False
-	FresnoScore_mysql=False
+	FresnoScore_mysql=True
 	FresnoScore_ftp=False
 	FresnoScore_smtp=False
 	FresnoScore_dns=False
 	
 	Team6=Sacramento
 	SacramentoScore_internet=True
-	SacramentoScore_apache=False
+	SacramentoScore_apache=True
 	SacramentoScore_samba=False
 	SacramentoScore_ssh=False
-	SacramentoScore_rdp=False
+	SacramentoScore_rdp=True
 	SacramentoScore_vnc=False
 	SacramentoScore_mysql=False
-	SacramentoScore_ftp=False
-	SacramentoScore_smtp=False
+	SacramentoScore_ftp=True
+	SacramentoScore_smtp=True
 	SacramentoScore_dns=False
 	
 	Team7=Santacruz
 	SantacruzScore_internet=True
 	SantacruzScore_apache=False
-	SantacruzScore_samba=False
+	SantacruzScore_samba=True
 	SantacruzScore_ssh=False
-	SantacruzScore_rdp=False
+	SantacruzScore_rdp=True
 	SantacruzScore_vnc=False
 	SantacruzScore_mysql=False
 	SantacruzScore_ftp=False
 	SantacruzScore_smtp=False
-	SantacruzScore_dns=False
+	SantacruzScore_dns=True
 	
 	Team8=Workstation
 	WorkstationScore_internet=True
