@@ -530,7 +530,8 @@ def grapherFunction():
                 table_data[5].append("N/A")
 
             if (t.isScored("mysql")):
-                table_data[6].append(str(checkMYSQL(t.getAddress(), mySQL_PWD, injectMYSQLCurr)) + ":" + str(t.countUptime("mysql", injectMYSQLCurr)))
+                table_data[6].append(str("W.I.P"))
+                #table_data[6].append(str(checkMYSQL(t.getAddress(), mySQL_PWD, injectMYSQLCurr)) + ":" + str(t.countUptime("mysql", injectMYSQLCurr)))
             if (not t.isScored("mysql")):
                 table_data[6].append("N/A")
 
@@ -560,7 +561,7 @@ def grapherFunction():
         table.set_fontsize(14)
         table.scale(1,3)
         ax.axis('off')
-        plt.savefig("InjectSLA.png", bbox_inches = 'tight')
+        plt.savefig("InjectSLA.png", bbox_inches = 'tight', dpi=300)
         time.sleep(checkInterval)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
