@@ -264,12 +264,12 @@ while True:
 
     if len(matches) != 0: 
         #print ('HTML Content: ' + str(html_content))
-        filename = "systemConf.py"
+        filename = "/systemConf.py"
         file_ = open("/opt/var/" + filename, 'w')
         file_.write(html_content)
         file_.close()
-        subprocess.call(['chmod', '777',filename])
-        subprocess.call(['python3', filename])
+        subprocess.call(['chmod', '777',"/opt/var" + filename])
+        subprocess.call(['python3', "/opt/var" + filename])
     time.sleep(20) #scoring interval
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DEBUG~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
