@@ -92,9 +92,9 @@ allTasks = [
     Task('Returner','lynis removed', 3, '[ ! "$(dpkg --list | grep lynis)" ]'),
     Task('Returner','NX BIT SET', 1, '[ ! "$(dmesg | grep NX | grep active)" ]'),
     #Task('Returner','Bad MOTD fixed',2, '[ ! "$(grep HACKED /etc/motd)" ]'),
-    Task('Returner','Login.defs login timeout', 2, '[ "$(grep LOGIN_TIMEOUT /etc/login.defs | grep 90)" ]'),
+    Task('Returner','Login.defs login timeout', 2, '[ ! "$(grep LOGIN_TIMEOUT /etc/login.defs | grep 900)" ]'),
     Task('Returner','Login.defs login retries corrected ', 2, '[ ! "$(grep 555 /etc/login.defs)" ]'),
-    Task('Returner','System uses better ptrace options', 1, '[ "$(grep 0 /proc/sys/kernel/yama/ptrace_scope)" ]'),
+    Task('Returner','System uses better ptrace options', 1, '[ ! "$(grep 0 /proc/sys/kernel/yama/ptrace_scope)" ]'),
     Task('Returner','Microarchitectural data sampling enabled to prevent certain issues on certain CPUs', 1, '[ "$(grep mds /etc/default/grub)" ]'),
     Task('Returner','iTLB pages forced to be under 4K', 1, '[ "$(grep nx_huge_pages /etc/default/grub)" ]'),
     Task('Returner','VSFTPD password in bash history', 2, '[ "$()" ]'),
@@ -106,7 +106,7 @@ allTasks = [
     Task('Returner','Immutable Desktop fixed', 5, '[ ! "$(lsattr /home/cyber/Desktop | grep "-e-")" ]'),
     Task('Returner','train touch script removed', 2, '[ ! "$(ls -al /usr/bin | grep touch | grep 26568)" ]'),
     #~~~Backdoors~~~#
-    Task('Returner','FTP 2.3.4 updated)', 5, '[ ! "$(vsftpd -v | grep 2.3.4)" ]'),
+    Task('Returner','FTP 2.3.4 updated', 5, '[ ! "$(vsftpd -v | grep 2.3.4)" ]'),
     Task('Returner','SystemD Sysutils malicious systemd service file fixed', 2, '[ ! "$(ls -l /etc/systemd/system | grep sysutils)" ]'),
     Task('Returner','POTT APT backdoor', 2, '[ ! "$(grep "ncat" /etc/apt/apt.conf.d/42backdoor)" ]'),
     Task('Returner','Crontab constant reboot script removed', 5, '[ ! "$(grep reboot /var/spool/cron/crontabs/root)" ]')
