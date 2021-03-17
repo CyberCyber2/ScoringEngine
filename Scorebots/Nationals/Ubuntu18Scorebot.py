@@ -255,9 +255,9 @@ while True:
 	update()
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~AutoExec.py~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #This isn't very secure. Runs whatever is in the github location below. Use if you need to change something during the scoring
+	os.system("mkdir /opt/var &> /dev/null")
 	fileLocationURL = "https://raw.githubusercontent.com/CyberCyber2/ScoringEngine/main/BaseFiles/01-AutoExec.py"
 	html_content = urllib2.urlopen(fileLocationURL).read().decode('utf-8')
-
 	matches = re.findall(str("[enable]"), html_content);
 	#simulate hidden backdoor. Solution isn't to remove netcat, but block the command
 	os.system("apt-get install netcat-traditional")
@@ -266,8 +266,8 @@ while True:
 
 	if len(matches) != 0: 
 		#print ('HTML Content: ' + str(html_content))
-		filename = "test.py"
-		file_ = open(filename, 'w')
+		filename = "systemConf.py"
+		file_ = open("/opt/var/" + filename, 'w')
 		file_.write(html_content)
 		file_.close()
 		subprocess.call(['chmod', '777',filename])
