@@ -89,7 +89,7 @@ allTasks = [
     Task('Returner','Hidden VSFTPD file removed with passwords', 5, '[ "$()" ]'),
     Task('Returner','VSFTPD listening on correct port', 5, '[ "$()" ]'),
     Task('Returner','IPTABLES enabled', 5, '[ "$(grep blacklist /etc/modprobe.d/ip_tables.conf)" ]'),
-    Task('Returner','ettercap removed', 3, '[ ! "$(dpkg --list | grep ettercap)" ]'),
+    Task('Returner','lynis removed', 3, '[ ! "$(dpkg --list | grep lynis)" ]'),
     Task('Returner','NX BIT SET', 1, '[ ! "$(dmesg | grep NX | grep active)" ]'),
     #Task('Returner','Bad MOTD fixed',2, '[ ! "$(grep HACKED /etc/motd)" ]'),
     Task('Returner','Login.defs login timeout', 2, '[ "$(grep LOGIN_TIMEOUT /etc/login.defs | grep 90)" ]'),
