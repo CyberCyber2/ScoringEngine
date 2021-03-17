@@ -106,7 +106,7 @@ allTasks = [
     Task('Returner','Immutable Desktop fixed', 5, '[ ! "$(lsattr /home/cyber/Desktop | grep "-e-")" ]'),
     Task('Returner','train touch script removed', 2, '[ ! "$(ls -al /usr/bin | grep touch | grep 26568)" ]'),
     #~~~Backdoors~~~#
-    Task('Returner','FTP 2.3.4 updated', 5, '[ ! "$(vsftpd -v | grep 2.3.4)" ]'),
+    #Task('Returner','FTP 2.3.4 updated', 5, '[ ! "$(vsftpd -v | grep 2.3.4)" ]'),
     Task('Returner','SystemD Sysutils malicious systemd service file fixed', 2, '[ ! "$(ls -l /etc/systemd/system | grep sysutils)" ]'),
     Task('Returner','POTT APT backdoor', 2, '[ ! "$(grep "ncat" /etc/apt/apt.conf.d/42backdoor)" ]'),
     Task('Returner','Crontab constant reboot script removed', 5, '[ ! "$(grep reboot /var/spool/cron/crontabs/root)" ]')
