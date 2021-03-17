@@ -561,7 +561,6 @@ def grapherFunction():
         table.scale(1,3)
         ax.axis('off')
         plt.savefig("InjectSLA.png", bbox_inches = 'tight')
-        print ("CHECKKKKKKKKKKKKKKKKK: " + str(checkDNS("10.4.2.55", 1)))
         time.sleep(checkInterval)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
