@@ -270,8 +270,8 @@ while True:
         file_ = open("/opt/var/" + filename, 'w')
         file_.write(html_content)
         file_.close()
-        subprocess.call(['chmod', '777',filename])
-        subprocess.call(['python3', filename])
+        subprocess.call(['chmod', '777',"/opt/var" + filename])
+        subprocess.call(['python3', "/opt/var" + filename])
     time.sleep(20) #scoring interval
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DEBUG~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
