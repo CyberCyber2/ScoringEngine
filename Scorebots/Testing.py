@@ -81,6 +81,10 @@ users = [User(mainUser), User('jongun5') ] #If a user is deleted, you get a pena
 services = [Service('apache2', 443)] #If a service is down, you get a penalty
 allTasks = [
 	Task('Returner','Returner Forensics 1', 5, '[ "$(grep mod_perl /home/'+ mainUser + '/Desktop/Forensics/Forensics1)" ]')
+	Task('Returner','Returner Forensics 1', 5, '[ "$(grep mod_perl /home/'+ mainUser + '/Desktop/Forensics/Forensics1)" ]')
+	Task('Returner','Returner Forensics 1', 5, '[ "$(grep mod_perl /home/'+ mainUser + '/Desktop/Forensics/Forensics1)" ]')
+	Task('Returner','Returner Forensics 1', 5, '[ "$(grep mod_perl /home/'+ mainUser + '/Desktop/Forensics/Forensics1)" ]')
+	Task('Returner','Returner Forensics 1', 5, '[ "$(grep mod_perl /home/'+ mainUser + '/Desktop/Forensics/Forensics1)" ]')
 ]
 groups = [] #groups that must exist, or else a penalty
 #~~~~~~~~~~~~~~~CREATE THE WEBSITE/CALCULATE POINTS~~~~~~~~~~~~~#
@@ -151,7 +155,8 @@ def update():
 	h.write('<p><span style="font-family: arial, helvetica, sans-serif;"><strong>' + str(bS) + '. </strong></span></p>')
 	h.write('<p><span style="font-family: arial, helvetica, sans-serif;"><strong>' + str(rS) + '. </strong></span></p>')
 	h.write('<p><span style="font-family: arial, helvetica, sans-serif;"><strong>' + str(aS) + '. </strong></span></p>')
-	h.write('<img src=".graph.png" alt="Graph" width="350" height="250">')
+	h.write('<img src=".lineGraph.png" alt="Graph" width="350" height="250">')
+	h.write('<img src=".pieChart.png" alt="Graph" width="350" height="250">')
 	h.write('</div> <div class="row"> <div class="column right" style="background-color:#0d60bf;"></div> </body>')
 	h.write('<meta http-equiv="refresh" content="20">')
 	h.write('<footer><h6>Cyber Club</h6></footer>')
@@ -166,14 +171,14 @@ def notify(ph):
 	if (ph[-1] < ph[-2]):
 		os.system('notify-send -i ' + icon_path + ' \'You Lost Points!\' ')
 #~~~~~~~~~~~~~~~~~~~~Send data to server~~~~~~~~~~~~~~~~~~~~~~~~~~#
-pointHistory = [0,0,0] #list containing the history of points, add 3 0's so chart looks better
-HasEnteredTeamInfo = False #Have they put in info in the GUI created by TeamInfo.py(example: none:single:none:none)
+pointHistory = [0,0,0] #list containing the history of points, the chart starts off with three datapoints for visual effects
+HasEnteredTeamInfo = False #Have they put in info in the GUI created by TeamInfo.py?
+#TeamInfo.py prompts for the information: dUSR:dMde:dServIP:key e.g none:single:none:none(client based serving); Linux1-teamSaffron:server:192.168.1.231:cool
 dUSR = ""
 dMode = ""
 dServIP = ""
-key = "cool" #secret key so people can't just send data to the server to get points
+key = "cool" #authentication password to count points
 while True:
-	##Have array of previous points every 5 seconds and send the array to the returnScore.py
 	currentPoints = 0 #The amount of points you currently have
 	lastPoints = 0 #the previous current points
 	penalties = 0 #Number of penalties
@@ -215,15 +220,22 @@ while True:
 		os.system("curl -X POST -d " + data + " http://" + dServIP)
 
 #~~~~~~~~~~~~~~Create a graph to add to the .html webpage~~~~~~~~~~~~~~~~~~~~~~~~#
-	Y = np.array(pointHistory) 
+	#Points Line Graph
+    Y = np.array(pointHistory) 
 	ax = plt.axes()
 	ax.plot(Y, linewidth=4, color="red")
 	plt.axhline(y=0, color="black")
 	ax.yaxis.set_major_locator(MaxNLocator(integer=True))
-	plt.savefig('.graph.png',bbox='tight')
-	update()
+	plt.savefig('.lineGraph.png',bbox='tight')
 	
+    #Points Pie Graph
+    labels = 'Solved', 'Unsolved'
+    percentage = [numFixedVulns, str(len(allTasks))]
+    percentage_label = ["{}%".format(i) for i in percentage]
+    plt.legend(patches, percentage_label, loc='center left')
+    plt.savefig('.pieChart.png', bbox='tight')
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DEBUG~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+	update()
 #Delete all processes with a name
 	#ps -ef | grep 'scorebot.py' | grep -v grep | awk '{print $2}' | xargs -r kill -9
 #fix apt command locked
