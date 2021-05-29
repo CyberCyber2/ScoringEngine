@@ -84,7 +84,7 @@ allTasks = [
 	Task('Returner','Returner Forensics 1', 5, '[ "$(grep mod_perl /home/'+ mainUser + '/Desktop/Forensics/Forensics1)" ]')
 	Task('Returner','Returner Forensics 1', 5, '[ "$(grep mod_perl /home/'+ mainUser + '/Desktop/Forensics/Forensics1)" ]')
 	Task('Returner','Returner Forensics 1', 5, '[ "$(grep mod_perl /home/'+ mainUser + '/Desktop/Forensics/Forensics1)" ]')
-	Task('Returner','Returner Forensics 1', 5, '[ "$(grep mod_perl /home/'+ mainUser + '/Desktop/Forensics/Forensics1)" ]')
+	Task('Returner','Returner Forensics 2', 5, '[ "$(grep mod_perl /home/'+ mainUser + '/Desktop/Forensics2.txt)" ]')
 ]
 groups = [] #groups that must exist, or else a penalty
 #~~~~~~~~~~~~~~~CREATE THE WEBSITE/CALCULATE POINTS~~~~~~~~~~~~~#
