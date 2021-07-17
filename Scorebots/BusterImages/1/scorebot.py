@@ -85,7 +85,7 @@ allTasks = [
 	Task('Beginner','Forensics 3', 5, '[ "$(grep 1984_AMONGUS /home/'+ mainUser + '/Desktop/Forensics/Forensics3)" ]')
 	
 	Task('Beginner','Insecure password for nadine fixed', 1, '[ ! "$(grep jkB0mh /etc/shadow)" ]'),
-	Task('Beginner','brehm has a password', 1, '[  "$(grep \'\$*\$\' /etc/shadow | grep brehm)" ]'),
+	Task('Beginner','julian has a password', 1, '[  "$(grep \'\$*\$\' /etc/shadow | grep julian)" ]'),
 	Task('Beginner','Unauthorized user AFJ removed', 1, '[ ! "$(grep AFJ /etc/passwd )" ]')
 	Task('Beginner','Hidden user toor removed', 1, '[ ! "$(grep toor /etc/passwd)" ]')
 	Task('Beginner','System notifies updates immediately ', 1, ' [  "$(grep Unattended-Upgrade /etc/apt/apt.conf.d/10periodic | grep 0)" ]'),
@@ -99,6 +99,7 @@ allTasks = [
 	Task('Beginner','Stellarium Installed', 1, ' [  "$(dpkg --list | grep stellarium)" ]'), 
 	Task('Beginner','Media Files removed', 1, ' [ ! "$(ls /home/buster/Pictures | grep jpg)" ]'),
 	Task('Beginner','SSHD root login not permitted', 1, ' [ "$(grep PermitRoot /etc/ssh/sshd_config | grep no)" ]'),
+	Task('Beginner','SSHD using correct port', 1, ' [ "$(grep 2222 /etc/ssh/sshd_config)" ]')
 ]
 groups = [] #groups that must exist, or else a penalty
 #~~~~~~~~~~~~~~~CREATE THE WEBSITE/CALCULATE POINTS~~~~~~~~~~~~~#
