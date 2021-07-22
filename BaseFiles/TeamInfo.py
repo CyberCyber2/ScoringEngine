@@ -69,7 +69,7 @@ g.pack(side = TOP)
 q = tk.Label(root, text="Score via server: joe:server:192.168.5.5:443")
 q.pack(side = TOP)
 
-v = tk.Label(root, text="Example: none:single:none:none")
+v = tk.Label(root, text="Add and Delete a space to refresh Entry Box")
 v.pack(side = TOP)
 
 x = tk.Label(root, text=already_submitted)
@@ -77,6 +77,7 @@ x.pack(side = BOTTOM)
 
 e = tk.Entry(root)
 e.pack()
+e.insert(-1, 'none:single:none:none')
 e.bind('<KeyRelease>', check)
 b = tk.Button(root, text="Submit", command=submit, state='disable')
 b.pack()
