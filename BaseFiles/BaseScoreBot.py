@@ -16,6 +16,8 @@ import urllib.request as urllib2
 import re
 mainUser = 'cyber' #the place to install ScoringEngine
 today = _datetime.date.today()
+plt.ioff()
+scoreInterval = 5 #seconds between scoring
 #~~~~~~~~~~~~~~~~Create Classes~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 class Service:
 	def __init__(self,name,port):
@@ -80,7 +82,9 @@ class Task:
 users = [User(mainUser), User('jongun5') ] #If a user is deleted, you get a penalty
 services = [Service('apache2', 443)] #If a service is down, you get a penalty
 allTasks = [
-	Task('Returner','Returner Forensics 1', 5, '[ "$(grep mod_perl /home/'+ mainUser + '/Desktop/Forensics/Forensics1)" ]')
+	Task('Returner','Returner Forensics 1', 5, '[ "$(grep test /home/'+ mainUser + '/Desktop/Forensics1)" ]'),
+	Task('Returner','Returner Forensics 2', 5, '[ "$(grep test /home/'+ mainUser + '/Desktop/Forensics2)" ]'),
+	Task('Returner','Returner Forensics 3', 5, '[ "$(grep test /home/'+ mainUser + '/Desktop/Forensics3)" ]')
 ]
 groups = [] #groups that must exist, or else a penalty
 #~~~~~~~~~~~~~~~CREATE THE WEBSITE/CALCULATE POINTS~~~~~~~~~~~~~#
@@ -215,13 +219,25 @@ while True:
 		os.system("curl -X POST -d " + data + " http://" + dServIP)
 
 #~~~~~~~~~~~~~~Create a graph to add to the .html webpage~~~~~~~~~~~~~~~~~~~~~~~~#
-	Y = np.array(pointHistory) 
-	ax = plt.axes()
-	ax.plot(Y, linewidth=4, color="red")
-	plt.axhline(y=0, color="black")
-	ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+	pltOneValues = pointHistory
+	figure, axis = plt.subplots(2,1)
+	axis[0].plot(pltOneValues, linewidth=4, color="red")
+	axis[0].set_title("Points")
+	axis[0].yaxis.set_major_locator(MaxNLocator(integer=True))
+	axis[0].axhline(y=0, color="black")
+	axis[0].set_xlabel("Time (Intervals of " + str(scoreInterval) + " seconds)")
+	axis[0].set_ylabel("Points")
+	#
+	labels = ["Solved", "Unsolved"]
+	pltTwoValues = [numFixedVulns, len(allTasks) - numFixedVulns] 
+	explode = (0,0.1)
+	axis[1].pie(pltTwoValues, explode=explode, labels=labels, autopct='%1.1f%%',
+    shadow=True, startangle=90)
+	axis[1].axis('equal')
 	plt.savefig('.graph.png',bbox='tight')
+	plt.close()
 	update()
+	time.sleep(scoreInterval)
 	
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DEBUG~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #Delete all processes with a name
