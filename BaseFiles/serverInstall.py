@@ -8,7 +8,7 @@ import requests
 mainUser = 'server' #the place to install ScoringEngine
 injectSLA = requests.get('https://raw.githubusercontent.com/CyberCyber2/ScoringEngine/main/BaseFiles/ServerInjectSLA.py')
 serverLoc = requests.get('https://raw.githubusercontent.com/CyberCyber2/ScoringEngine/main/BaseFiles/Server.py')
-injectsConfLoc = requests.get('https://raw.githubusercontent.com/CyberCyber2/ScoringEngine/main/BaseFiles/ServerGrapher.py')
+injectsConfLoc = requests.get('https://raw.githubusercontent.com/CyberCyber2/ScoringEngine/main/BaseFiles/Injects.cnf')
 serverGrapherLoc= requests.get('https://raw.githubusercontent.com/CyberCyber2/ScoringEngine/main/BaseFiles/ServerGrapher.py')
 with open ('ServerInjectSLA.py', 'w') as outf:
     outf.write(injectSLA.text)
