@@ -27,3 +27,4 @@ os.system('python3 -m pip pip install numpy')
 os.system('pip3 install --upgrade setuptools')
 os.system('pip3 install pandas')
 os.system('pip install numpy scipy matplotlib')
+
